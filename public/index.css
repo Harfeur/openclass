@@ -1,0 +1,16 @@
+#inscription {
+    display: flexbox;
+    height: 75px;
+    width: 75px;
+    border-radius: 75px;
+    z-index: 5;
+}
+
+#inscription, #schedule {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+#parent {
+    display: grid;
+}
