@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS "Newsletter" (
 INSERT INTO Matieres VALUES
 (1, "NSI"),
 (2, "Mathématiques"),
-(3, "Philosophie")
+(3, "Philosophie"),
 (4, "Enseignement Scientifique"),
 (5, "Histoire-Géographie"),
 (6, "Espagnol"),
@@ -49,7 +49,7 @@ INSERT INTO Matieres VALUES
 (12, "HGGSP"),
 (13, "HLP"),
 (14, "SVT"),
-(15, "SES")
+(15, "SES"),
 (16, "Latin"),
 (17, "LLCE"),
 (18, "Grec");
