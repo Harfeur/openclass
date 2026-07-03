@@ -27,6 +27,12 @@ app.get('/matieres', (req, res) => {
     res.send(query.all());
 });
 
+app.get('/groupes', (req, res) => {
+    //console.log(req.query);
+    const query = database.prepare('SELECT id, groupe FROM groupes;');
+    res.send(query.all());
+});
+
 
 app.get('/calendrier', (req, res) => {
     //console.log(req.query);
