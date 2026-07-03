@@ -36,7 +36,7 @@ app.get('/groupes', (req, res) => {
 
 app.get('/calendrier', (req, res) => {
     //console.log(req.query);
-    const query = database.prepare('SELECT *, cours.id FROM matieres JOIN matieres ON matieres.id = cours.id_matiere JOIN groupes ON groupes.id = cours.id_matiere;');
+    const query = database.prepare('SELECT *, cours.id FROM Cours JOIN matieres ON matieres.id = cours.id_matiere JOIN groupes ON groupes.id = cours.id_matiere;');
     res.send(query.all());
 });
 
