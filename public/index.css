@@ -6,11 +6,19 @@
     z-index: 5;
 }
 
-#inscription, #schedule {
+#inscription,
+#schedule {
     grid-column: 1;
     grid-row: 1;
 }
 
 #parent {
     display: grid;
+}
+
+footer {
+    text-align: center;
+    padding: 5px;
+    background-color: #abbaba;
+    color: black;
 }

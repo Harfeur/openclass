@@ -49,18 +49,3 @@ app.post('/nouveau', (req, res) => {
     res.send(query.all());
 });
 
-/*
-{
-    "matiere": "Philosophie",
-    "groupe": "TG4",
-    "date": "03-07-2026",
-    "timeStart": "08:00:00",
-    "timeEnd": "10:00:00",
-    "semaineA": "True",
-    "semaineB": "False",
-    "nom": "HASAN Daniel",
-    "email": "daniel537hassan@gmail.com"
-}
-
-NE SUPPRIMER PAS SVP
-*/
