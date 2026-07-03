@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS 'Cours' (
 	'fin' TIME NOT NULL,
 	'prof' TEXT NOT NULL,
 	'courriel' TEXT NOT NULL,
-	PRIMARY KEY('id'),
+	PRIMARY KEY('id' AUTOINCREMENT) ,
 	FOREIGN KEY ('id_groupe') REFERENCES 'Groupes'('id')
 	ON UPDATE NO ACTION ON DELETE NO ACTION,
 	FOREIGN KEY ('id_matiere') REFERENCES 'Matieres'('id')

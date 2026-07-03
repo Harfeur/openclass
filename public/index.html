@@ -49,7 +49,7 @@
                 <label for="disabledSelect" class="form-label">Matière</label>
                 <select id="disabledSelect" class="form-select">
                     <option>...</option>
-                    <option>Matière</option>
+                    <option value="1">Matière</option>
                     <option>MATH</option>
                     
                 </select>
@@ -61,40 +61,40 @@
                 <input type="text" class="form-control" id="matiere" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
-                <label for="matiere" class="form-label">Date</label>
+                <label for="date" class="form-label">Date</label>
                 <input type="date" class="form-control" id="date" name="date">
                 
             </div>
             <div class="mb-3">
-                <label for="matiere" class="form-label">Heure Debut</label>
-                <input type="time" class="form-control" name="time">
+                <label for="timeStart" class="form-label">Heure Debut</label>
+                <input type="time" class="form-control" id="timeStart" name="timeStart">
             </div>
             <div class="mb-3">
-                <label for="matiere" class="form-label">Heure Fin</label>
-                <input type="time" class="form-control" name="time1">
+                <label for="timeEnd" class="form-label">Heure Fin</label>
+                <input type="time" class="form-control" id="timeEnd" name="timeEnd" >
             </div>
 
 
 
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1">
-                <label class="form-check-label" for="radioDefault1">
+                <input class="form-check-input" type="radio" name="radioDefault" id="reguliere">
+                <label class="form-check-label" for="reguliere">
                     Réguliére
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2" checked>
-                <label class="form-check-label" for="radioDefault2">
+                <input class="form-check-input" type="radio" name="radioDefault" id="reguliere" checked>
+                <label class="form-check-label" for="reguliere">
                     Inverse de Réguilére (JSP)
                 </label>
             </div>
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Semaine A</label>
+                <input type="checkbox" class="form-check-input" id="semaineA">
+                <label class="form-check-label" for="semaineA">Semaine A</label>
             </div>
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Semaine B</label>
+                <input type="checkbox" class="form-check-input" id="semaineB">
+                <label class="form-check-label" for="semaineB">Semaine B</label>
             </div>
 
 
@@ -102,12 +102,12 @@
 
 
             <div class="mb-3">
-                <label for="matiere" class="form-label">Votre Nom & Prénom</label>
-                <input type="text" class="form-control" id="matiere" aria-describedby="emailHelp">
+                <label for="name" class="form-label">Votre Nom & Prénom</label>
+                <input type="text" class="form-control" id="name" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
-                <label for="matiere" class="form-label">Votre E-Mail</label>
-                <input type="email" class="form-control" id="matiere" aria-describedby="emailHelp">
+                <label for="email" class="form-label">Votre E-Mail</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
             </div>
             
 
