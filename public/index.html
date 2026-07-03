@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="fr">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Open Class</title>
@@ -10,142 +11,161 @@
     <script src="https://cdn.jsdelivr.net/npm/lemonadejs/dist/lemonade.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/index.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/style.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="index.css" />
-  </head>
-  <body>
+</head>
+
+<body>
 
 
     <div id="parent">
         <div id='schedule' style="height: 100%;"></div>
-        <button id="inscription" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        S'inscrire
+        <button id="inscription" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#exampleModal">
+            S'inscrire
         </button>
     </div>
 
-    
+
 
 
 
     <!-- Button trigger modal -->
-    
+
 
 
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Je veux être visité</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Je veux être visité</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
 
-        <div class="modal-body">
 
-            <div class="mb-3">
-                <label for="disabledSelect" class="form-label">Matière</label>
-                <select id="disabledSelect" class="form-select">
-                    <option>...</option>
-                    <option value="1">Matière</option>
-                    <option>MATH</option>
-                    
-                </select>
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="disabledSelect" class="form-label">Matière</label>
+                        <select id="disabledSelect" class="form-select">
+                            <option>...</option>
+                            <option value="1">Matière</option>
+                            <option>MATH</option>
+
+                        </select>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="matiere" class="form-label">Groupe</label>
+                        <input type="text" class="form-control" id="matiere" aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" name="date">
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="timeStart" class="form-label">Heure Debut</label>
+                        <input type="time" class="form-control" id="timeStart" name="timeStart">
+                    </div>
+                    <div class="mb-3">
+                        <label for="timeEnd" class="form-label">Heure Fin</label>
+                        <input type="time" class="form-control" id="timeEnd" name="timeEnd">
+                    </div>
+
+
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="radioDefault" id="reguliere">
+                        <label class="form-check-label" for="reguliere">
+                            Réguliére
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="radioDefault" id="reguliere" checked>
+                        <label class="form-check-label" for="reguliere">
+                            Inverse de Réguilére (JSP)
+                        </label>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="semaineA">
+                        <label class="form-check-label" for="semaineA">Semaine A</label>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="semaineB">
+                        <label class="form-check-label" for="semaineB">Semaine B</label>
+                    </div>
+
+
+
+
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Votre Nom & Prénom</label>
+                        <input type="text" class="form-control" id="name" aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Votre E-Mail</label>
+                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary">Inscrire</button>
+                </div>
             </div>
-
-
-            <div class="mb-3">
-                <label for="matiere" class="form-label">Groupe</label>
-                <input type="text" class="form-control" id="matiere" aria-describedby="emailHelp">
-            </div>
-            <div class="mb-3">
-                <label for="date" class="form-label">Date</label>
-                <input type="date" class="form-control" id="date" name="date">
-                
-            </div>
-            <div class="mb-3">
-                <label for="timeStart" class="form-label">Heure Debut</label>
-                <input type="time" class="form-control" id="timeStart" name="timeStart">
-            </div>
-            <div class="mb-3">
-                <label for="timeEnd" class="form-label">Heure Fin</label>
-                <input type="time" class="form-control" id="timeEnd" name="timeEnd" >
-            </div>
-
-
-
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="radioDefault" id="reguliere">
-                <label class="form-check-label" for="reguliere">
-                    Réguliére
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="radioDefault" id="reguliere" checked>
-                <label class="form-check-label" for="reguliere">
-                    Inverse de Réguilére (JSP)
-                </label>
-            </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="semaineA">
-                <label class="form-check-label" for="semaineA">Semaine A</label>
-            </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="semaineB">
-                <label class="form-check-label" for="semaineB">Semaine B</label>
-            </div>
-
-
-
-
-
-            <div class="mb-3">
-                <label for="name" class="form-label">Votre Nom & Prénom</label>
-                <input type="text" class="form-control" id="name" aria-describedby="emailHelp">
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Votre E-Mail</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
-            </div>
-            
-
-        </div>
-
-
-
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-            <button type="button" class="btn btn-primary">Inscrire</button>
-        </div>
         </div>
     </div>
-    </div>
+
+    <footer>
+        <a href="#">OpenClass</a> © 2026 by <a href="#">Daniel Hasan</a> is licensed
+        under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a><img
+            src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt=""
+            style="max-width: 1em;max-height:1em;margin-left: .2em;"><img
+            src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt=""
+            style="max-width: 1em;max-height:1em;margin-left: .2em;"><img
+            src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt=""
+            style="max-width: 1em;max-height:1em;margin-left: .2em;"><img
+            src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt=""
+            style="max-width: 1em;max-height:1em;margin-left: .2em;">
+    </footer>
 
     <script>
-    const { Schedule } = calendarjs;
+        const { Schedule } = calendarjs;
 
-    Schedule(document.getElementById('schedule'), {
-        type: 'weekdays',
-        weekly: true,
-        validRange: ['08:00', '18:00'],
-        readOnlyRange: ['08:00', '18:00'],
-        overlap: true,
-        data: [
-            { guid: '1', title: 'Morning Meeting', weekday: 1, start: '08:00', end: '09:00', color: '#3498db', readonly: false},
+        Schedule(document.getElementById('schedule'), {
+            type: 'weekdays',
+            weekly: true,
+            validRange: ['08:00', '18:00'],
+            readOnlyRange: ['08:00', '18:00'],
+            overlap: true,
+            data: [
+                { guid: '1', title: 'Morning Meeting', weekday: 1, start: '08:00', end: '09:00', color: '#3498db', readonly: false },
 
-            { guid: '2', title: 'Lunch Break', weekday: 1, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true, description:"Test description"},
-            { guid: '3', title: 'Lunch Break', weekday: 2, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true},
-            { guid: '4', title: 'Lunch Break', weekday: 3, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true},
-            { guid: '5', title: 'Lunch Break', weekday: 4, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true},
-            { guid: '6', title: 'Lunch Break', weekday: 5, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true},
+                { guid: '2', title: 'Lunch Break', weekday: 1, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true, description: "Test description" },
+                { guid: '3', title: 'Lunch Break', weekday: 2, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true },
+                { guid: '4', title: 'Lunch Break', weekday: 3, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true },
+                { guid: '5', title: 'Lunch Break', weekday: 4, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true },
+                { guid: '6', title: 'Lunch Break', weekday: 5, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true },
 
-            { guid: '7', title: 'Project Work', weekday: 2, start: '10:30', end: '12:00', color: '#2ecc71' , visible: true},
-            { guid: '8', title: 'Project Work', weekday: 2, start: '10:00', end: '11:00', color: '#2ecc71' , visible: true}
-        ]
-    });
+                { guid: '7', title: 'Project Work', weekday: 2, start: '10:30', end: '12:00', color: '#2ecc71', visible: true },
+                { guid: '8', title: 'Project Work', weekday: 2, start: '10:00', end: '11:00', color: '#2ecc71', visible: true }
+            ]
+        });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-  </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
 </html>

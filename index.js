@@ -29,7 +29,7 @@ app.get('/matieres', (req, res) => {
 
 app.get('/groupes', (req, res) => {
     //console.log(req.query);
-    const query = database.prepare('SELECT id, groupe FROM groupes;');
+    const query = database.prepare('SELECT id, group FROM groupes;');
     res.send(query.all());
 });
 
