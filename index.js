@@ -21,19 +21,25 @@ app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
 
+app.get('/matieres', (req, res) => {
+    //console.log(req.query);
+    const query = database.prepare('SELECT id, matiere FROM matieres;');
+    res.send(query.all());
+});
+
+
 app.get('/calendrier', (req, res) => {
-    console.log(req.query);
-    const query = database.prepare('SELECT *, cours.id FROM Cours JOIN matieres ON matieres.id = cours.id_matiere JOIN groupes ON groupes.id = cours.id_matiere;');
+    //console.log(req.query);
+    const query = database.prepare('SELECT *, cours.id FROM matieres JOIN matieres ON matieres.id = cours.id_matiere JOIN groupes ON groupes.id = cours.id_matiere;');
     res.send(query.all());
 });
 
 
 app.post('/nouveau', (req, res) => {
-    const id = database.prepare(`SELECT MAX(id) AS id FROM Cours;`, {returnArrays: true}).all()[0][0];
-    console.log(id);
-    
+    const id = database.prepare(`SELECT MAX(id) AS id FROM Cours;`, { returnArrays: true }).all()[0][0];
+    // console.log(id);
     const data = req.body;
-    const query = database.prepare(`INSERT INTO Cours VALUES (${id+1}, ${data.matiere}, ${data.groupe}, '${data.date}', '${data.timeStart}', '${data.timeEnd}', ${data.semaineA}, ${data.semaineB}, '${data.nom}', '${data.email}');`);
+    const query = database.prepare(`INSERT INTO Cours (id_matiere, id_groupe, semaine_a, semaine_b, date, debut, fin, prof, courriel) VALUES (${data.matiere}, ${data.groupe}, ${data.semaineA}, ${data.semaineB}, '${data.date}', '${data.timeStart}', '${data.timeEnd}', '${data.nom}', '${data.email}');`);
     res.send(query.all());
 });
 
