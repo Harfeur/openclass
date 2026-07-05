@@ -15,7 +15,19 @@ fs.readFile("bdd.sql", "utf-8", (err, data) => {
     database.exec(data);
 });
 
-app.use(express.static(path.resolve('./public')));
+
+//app.use('/static', express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(express.static('public'))
+
+
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+//app.use(express.static(path.resolve('./public')));
+
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
