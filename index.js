@@ -45,7 +45,11 @@ app.post('/nouveau', (req, res) => {
     const id = database.prepare(`SELECT MAX(id) AS id FROM Cours;`, { returnArrays: true }).all()[0][0];
     // console.log(id);
     const data = req.body;
-    const query = database.prepare(`INSERT INTO Cours (id_matiere, id_groupe, semaine_a, semaine_b, date, debut, fin, prof, courriel) VALUES (${data.matiere}, ${data.groupe}, ${data.semaineA}, ${data.semaineB}, '${data.date}', '${data.timeStart}', '${data.timeEnd}', '${data.nom}', '${data.email}');`);
-    res.send(query.all());
+    if (data.nom === "") {
+        res.sendStatus(400)
+    } else {
+        const query = database.prepare(`INSERT INTO Cours (id_matiere, id_groupe, semaine_a, semaine_b, date, debut, fin, prof, courriel) VALUES (${data.matiere}, ${data.groupe}, ${data.semaineA}, ${data.semaineB}, '${data.date}', '${data.timeStart}', '${data.timeEnd}', '${data.nom}', '${data.email}');`);
+        res.send(query.all());
+    }
 });
 
