@@ -1,7 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
     function f() {
-
         const name = document.getElementById('name').value;
+        const semaineA = document.getElementById('semaineA');
+        const semaineB = document.getElementById('semaineB');
+        const reguliere = document.getElementById('reguliere');
+        console.log(semaineA.checked)
+        console.log(reguliere.checked)
+
+
 
         fetch('http://localhost:3000/nouveau', {
             method: 'POST',
@@ -12,8 +18,8 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify({
                 matiere: 2,
                 groupe: 4,
-                semaineA: true,
-                semaineB: false,
+                semaineA: semaineA.checked,
+                semaineB: semaineB.checked,
                 date: "2026-07-03",
                 timeStart: "08:00:00",
                 timeEnd: "10:00:00",
@@ -28,6 +34,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         })
     }
+    function reguilereE() {
+        //console.log("sa")
+        //alert("VOus Avez Clicker Reguilere")
+    }
+    document.getElementById("reguliere").onclick = reguilereE;
     document.getElementById("nouveau").onclick = f;
 });
 

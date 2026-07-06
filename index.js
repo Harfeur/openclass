@@ -3,6 +3,7 @@ const app = express();
 const port = 3000;
 const path = require('path');
 const fs = require('node:fs');
+let ejs = require('ejs');
 
 app.use(express.json()); // for parsing application/json
 
@@ -26,8 +27,24 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-//app.use(express.static(path.resolve('./public')));
+app.get('/try', (req, res) => {
+    const matieres = fetch("http://localhost:3000/matieres")
+        .then(res => console.log(res.data))
+    console.log("ok")
+    const query = database.prepare('SELECT matiere FROM matieres;');
+    //console.log(query.all());
 
+    const data = {
+        nom: "Daniel",
+        db: query.all()
+
+    }
+    console.log(data.db)
+    //console.log("a", query.all()[0])
+    res.render('try', { data });
+
+
+});
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
