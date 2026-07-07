@@ -74,7 +74,29 @@ app.post('/nouveau', (req, res) => {
     const id = database.prepare(`SELECT MAX(id) AS id FROM Cours;`, { returnArrays: true }).all()[0][0];
     // console.log(id);
     const data = req.body;
-    if (data.nom === "") {
+    if (data.matiere === "") {
+        res.status(400).send("Selectioner une matière")
+    } else if (data.groupe === "") {
+        res.status(400).send("Selectioner une groupe")
+    } else if (data.date === "") {
+        res.status(400).send("Choisisez une date")
+    } else if (data.timeStart === "") {
+        res.status(400).send("Choisisez heure de debut")
+    } else if (data.timeEnd === "") {
+        res.status(400).send("Choisisez fin de heure")
+    } else if (data.nom === "") {
+        res.status(400).send("La case Nom doit etre remplie")
+    } else if (data.email === "") {
+        res.status(400).send("La case E-Mail doit etre remplie")
+    } else {
+        const query = database.prepare(`INSERT INTO Cours (id_matiere, id_groupe, semaine_a, semaine_b, date, debut, fin, prof, courriel) VALUES (${data.matiere}, ${data.groupe}, ${data.semaineA}, ${data.semaineB}, '${data.date}', '${data.timeStart}', '${data.timeEnd}', '${data.nom}', '${data.email}');`);
+        res.send(query.all());
+    }
+});
+
+
+/*
+ if (data.nom === "") {
         res.status(400).send("La case Nom doit etre remplie")
     } else if (data.email === "") {
         res.status(400).send("La case EMAIL doit etre remplie")
@@ -87,6 +109,4 @@ app.post('/nouveau', (req, res) => {
     } else {
         const query = database.prepare(`INSERT INTO Cours (id_matiere, id_groupe, semaine_a, semaine_b, date, debut, fin, prof, courriel) VALUES (${data.matiere}, ${data.groupe}, ${data.semaineA}, ${data.semaineB}, '${data.date}', '${data.timeStart}', '${data.timeEnd}', '${data.nom}', '${data.email}');`);
         res.send(query.all());
-    }
-});
-
+    }*/

@@ -1,3 +1,20 @@
+    function reguilereE(elt) {
+    if (reguliere.checked) {
+        console.log("Coché")
+        reguliereOptions.style.display = ""
+    } else {
+        console.log("Décoché")
+        reguliereOptions.style.display = "none"
+    }
+    // var option1 = document.createElement("div")
+    // option1.className = "mb-3 form-check"
+    // option1.innerHTML = `<input type="checkbox" class="form-check-input" id="semaineA" value="False"> <label class="form-check-label" for="semaineA">Semaine A</label>`
+    // reguliereOptions.appendChild(option1)
+
+    //console.log("sa")
+    alert("Vous Avez Clicker Reguilere")
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     function f(e) {
         e.preventDefault();
@@ -42,15 +59,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
         })
     }
-    function reguilereE() {
-        //console.log("sa")
-        //alert("VOus Avez Clicker Reguilere")
-    }
-    document.getElementById("reguliere").onclick = reguilereE;
     document.getElementById("form_inscr").addEventListener("submit", f, true);
 });
 
 /*
+<div class="reguliereOptions">
+</div>
+
+<div class="mb-3 form-check">
+    <input type="checkbox" class="form-check-input" id="semaineA" value="False">
+    <label class="form-check-label" for="semaineA">Semaine A</label>
+</div>
+<div class="mb-3 form-check">
+    <input type="checkbox" class="form-check-input" id="semaineB">
+    <label class="form-check-label" for="semaineB">Semaine B</label>
+</div>
 
 document.addEventListener("DOMContentLoaded", function () {
     function f() {
