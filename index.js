@@ -75,7 +75,15 @@ app.post('/nouveau', (req, res) => {
     // console.log(id);
     const data = req.body;
     if (data.nom === "") {
-        res.sendStatus(400)
+        res.status(400).send("La case Nom doit etre remplie")
+    } else if (data.email === "") {
+        res.status(400).send("La case EMAIL doit etre remplie")
+    } else if (data.date === "") {
+        res.status(400).send("La case Date doit etre remplie")
+    } else if (data.timeStart === "") {
+        res.status(400).send("La case Date Debut doit etre remplie")
+    } else if (data.timeEnd === "") {
+        res.status(400).send("La case Date Fin doit etre remplie")
     } else {
         const query = database.prepare(`INSERT INTO Cours (id_matiere, id_groupe, semaine_a, semaine_b, date, debut, fin, prof, courriel) VALUES (${data.matiere}, ${data.groupe}, ${data.semaineA}, ${data.semaineB}, '${data.date}', '${data.timeStart}', '${data.timeEnd}', '${data.nom}', '${data.email}');`);
         res.send(query.all());

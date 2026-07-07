@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-    function f() {
+    function f(e) {
+        e.preventDefault();
         const name = document.getElementById('name').value;
         const semaineA = document.getElementById('semaineA');
         const semaineB = document.getElementById('semaineB');
@@ -28,8 +29,15 @@ document.addEventListener("DOMContentLoaded", function () {
             })
         }).then((response) => {
             if (response.status === 400) {
-                alert(console.log(response.status))
-                console.log(response)
+                var alertes = document.getElementById("alertes")
+                var newElement = document.createElement("div")
+                newElement.className = "alert alert-warning alert-dismissible fade show"
+                newElement.role = "alert"
+                response.text().then(txt => {
+                    newElement.innerHTML = `${txt}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`
+                    alertes.appendChild(newElement)
+                })
             }
 
         })
@@ -39,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //alert("VOus Avez Clicker Reguilere")
     }
     document.getElementById("reguliere").onclick = reguilereE;
-    document.getElementById("nouveau").onclick = f;
+    document.getElementById("form_inscr").addEventListener("submit", f, true);
 });
 
 /*

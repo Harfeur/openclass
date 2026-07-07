@@ -54,85 +54,92 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-
-
-                <div class="modal-body">
-
-                    <div class="mb-3">
-                        <label for="disabledSelect" class="form-label">Matière</label>
-                        <select id="disabledSelect" class="form-select">
-                            <option>...</option>
-                            <option value="1">Matière</option>
-                            <option>MATH</option>
-
-                        </select>
+                    <div id="alertes">
+                        
                     </div>
 
+                    <form id="form_inscr" method="post">
 
-                    <div class="mb-3">
-                        <label for="matiere" class="form-label">Groupe</label>
-                        <input type="text" class="form-control" id="matiere" aria-describedby="emailHelp">
-                    </div>
-                    <div class="mb-3">
-                        <label for="date" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="date" name="date">
+                        <div class="modal-body">
 
-                    </div>
-                    <div class="mb-3">
-                        <label for="timeStart" class="form-label">Heure Debut</label>
-                        <input type="time" class="form-control" id="timeStart" name="timeStart">
-                    </div>
-                    <div class="mb-3">
-                        <label for="timeEnd" class="form-label">Heure Fin</label>
-                        <input type="time" class="form-control" id="timeEnd" name="timeEnd">
-                    </div>
+                            <div class="mb-3">
+                                <label for="disabledSelect" class="form-label">Matière</label>
+                                <select id="disabledSelect" class="form-select">
+                                    <option>...</option>
+                                    <option value="1">Matière</option>
+                                    <option>MATH</option>
+
+                                </select>
+                            </div>
 
 
+                            <div class="mb-3">
+                                <label for="matiere" class="form-label">Groupe</label>
+                                <input type="text" class="form-control" id="matiere" aria-describedby="emailHelp">
+                            </div>
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Date</label>
+                                <input type="date" class="form-control" id="date" name="date">
 
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radioDefault" id="reguliere">
-                        <label class="form-check-label" for="reguliere" onclick="reguilereE()">
-                            Réguliére
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radioDefault" id="irreguilerr">
-                        <label class="form-check-label" for="irreguilerr">
-                            Inverse de Réguilére (JSP)
-                        </label>
-                    </div>
-
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="semaineA" value="False">
-                        <label class="form-check-label" for="semaineA">Semaine A</label>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="semaineB">
-                        <label class="form-check-label" for="semaineB">Semaine B</label>
-                    </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="timeStart" class="form-label">Heure Debut</label>
+                                <input type="time" class="form-control" id="timeStart" name="timeStart">
+                            </div>
+                            <div class="mb-3">
+                                <label for="timeEnd" class="form-label">Heure Fin</label>
+                                <input type="time" class="form-control" id="timeEnd" name="timeEnd">
+                            </div>
 
 
 
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="radioDefault" id="reguliere">
+                                <label class="form-check-label" for="reguliere" onclick="reguilereE()">
+                                    Réguliére
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="radioDefault" id="irreguilerr">
+                                <label class="form-check-label" for="irreguilerr">
+                                    Inverse de Réguilére (JSP)
+                                </label>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="semaineA" value="False">
+                                <label class="form-check-label" for="semaineA">Semaine A</label>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="semaineB">
+                                <label class="form-check-label" for="semaineB">Semaine B</label>
+                            </div>
 
 
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Votre Nom & Prénom <span class="req">*</span></label>
-                        <input type="text" class="form-control" id="name" aria-describedby="emailHelp" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Votre E-Mail</label>
-                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
-                    </div>
-
-
-                </div>
 
 
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button id="nouveau" type="button" class="btn btn-primary" onclick="f()">Inscrire</button>
-                </div>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Votre Nom & Prénom <span class="req">*</span></label>
+                                <input type="text" class="form-control" id="name" aria-describedby="emailHelp">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Votre E-Mail</label>
+                                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button id="nouveau" type="submit" class="btn btn-primary" >Inscrire</button>
+                        </div>
+    <
+                    </form>
+                
             </div>
         </div>
     </div>
