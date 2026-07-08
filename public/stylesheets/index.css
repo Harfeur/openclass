@@ -6,6 +6,10 @@
     z-index: 5;
 }
 
+#reguliereOptions {
+    display: none;
+}
+
 #inscription,
 #schedule {
     grid-column: 1;

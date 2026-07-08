@@ -1,10 +1,11 @@
-    function reguilereE(elt) {
+function reguilereE(elt) {
+    //const reguliereOptions = document.querySelector("reguliereOptions")
     if (reguliere.checked) {
-        console.log("Coché")
-        reguliereOptions.style.display = ""
+        console.log("Coché");
+        reguliereOptions.style.display = "block";
     } else {
-        console.log("Décoché")
-        reguliereOptions.style.display = "none"
+        console.log("Décoché");
+        reguliereOptions.style.display = "none";
     }
     // var option1 = document.createElement("div")
     // option1.className = "mb-3 form-check"
@@ -12,16 +13,24 @@
     // reguliereOptions.appendChild(option1)
 
     //console.log("sa")
-    alert("Vous Avez Clicker Reguilere")
+    //alert("Vous Avez Clicker Reguilere")
 }
 
 document.addEventListener("DOMContentLoaded", function () {
     function f(e) {
         e.preventDefault();
-        const name = document.getElementById('name').value;
+        const matiere = document.getElementById('matieres');
+        const groupe = document.getElementById('groupes');
+        const date = document.getElementById('date');
+        const heureDebut = document.getElementById('heureDebut');
+        const heureFin = document.getElementById('heureFin');
+
+        const reguliere = document.getElementById('reguliere');
         const semaineA = document.getElementById('semaineA');
         const semaineB = document.getElementById('semaineB');
-        const reguliere = document.getElementById('reguliere');
+
+
+        const nom = document.getElementById('name').value;
         console.log(semaineA.checked)
         console.log(reguliere.checked)
 

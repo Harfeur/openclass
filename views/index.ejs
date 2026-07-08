@@ -20,7 +20,7 @@
 
     <header>
         <nav class="navbar navbar-light bg-light">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="http://localhost:3000/try">
                 <img src="images/openclass-logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
                 OpenClass
             </a>
@@ -54,85 +54,99 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                    <div id="alertes">
-                        
-                    </div>
+                <div id="alertes">
 
-                    <form id="form_inscr" method="post">
-
-                        <div class="modal-body">
-
-                            <div class="mb-3">
-                                <label for="disabledSelect" class="form-label">Matière <span class="req">*</span></label>
-                                <select id="disabledSelect" class="form-select" required>
-                                    <option>...</option>
-                                </select>
-                            </div>
-
-
-                            <div class="mb-3">
-                                <label for="matiere" class="form-label">Groupe <span class="req">*</span></label>
-                                <input type="text" class="form-control" id="matiere" aria-describedby="emailHelp" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="date" class="form-label">Date <span class="req">*</span></label>
-                                <input type="date" class="form-control" id="date" name="date" required>
-
-                            </div>
-                            <div class="mb-3">
-                                <label for="timeStart" class="form-label">Heure Debut <span class="req">*</span></label>
-                                <input type="time" class="form-control" id="timeStart" name="timeStart" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="timeEnd" class="form-label">Heure Fin <span class="req">*</span></label>
-                                <input type="time" class="form-control" id="timeEnd" name="timeEnd" required>
-                            </div>
-
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioDefault" id="reguliere" onchange="reguilereE()">
-                    <label class="form-check-label" for="reguliere">
-                        Régulièrement
-                    </label>
                 </div>
 
-                <div class="reguliereOptions" style="display: none;">
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="semaineA" value="False">
-                        <label class="form-check-label" for="semaineA">Semaine A</label>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="semaineB">
-                        <label class="form-check-label" for="semaineB">Semaine B</label>
-                    </div>
-                </div>
+                <form id="form_inscr" method="post">
 
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioDefault" id="irreguilerr" onchange="reguilereE()">
-                    <label class="form-check-label" for="irreguilerr">
-                        Une seule fois
-                    </label>
-                </div>
-                            
+                    <div class="modal-body">
 
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Votre Nom & Prénom <span class="req">*</span></label>
-                                <input type="text" class="form-control" id="name" aria-describedby="emailHelp" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Votre E-Mail <span class="req">*</span></label>
-                                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required>
-                            </div>
-
-
+                        <div class="mb-3">
+                            <label for="matieres" class="form-label">Matière <span class="req">*</span></label>
+                            <select id="matieres" class="form-select" required>
+                                <option value="" selected disabled hidden>Choisisez</option>
+                                <% for(var i=0; i<data_matiere.length ; i++) {%>
+                                    <option value=<%=data_matiere[i].id %> >
+                                        <%=data_matiere[i].matiere %>
+                                    </option>
+                                    <% } %>
+                            </select>
                         </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                            <button id="nouveau" type="submit" class="btn btn-primary">Inscrire</button>
+                        <div class="mb-3">
+                            <label for="groupes" class="form-label">Groupe <span class="req">*</span></label>
+                            <select id="groupes" class="form-select" required>
+                                <option value="" selected disabled hidden>Choisisez</option>
+                                <% for(var i=0; i<data_groupes.length; i++) {%>
+                                    <option value=<%=data_groupes[i].id %> >
+                                        <%=data_groupes[i].groupe %>
+                                    </option>
+                                    <% } %>
+                            </select>
                         </div>
-    <
-                    </form>
-                
+
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Date <span class="req">*</span></label>
+                            <input type="date" class="form-control" id="date" name="date" required>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="heureDebut" class="form-label">Heure Debut <span class="req">*</span></label>
+                            <input type="time" class="form-control" id="heureDebut" name="heureDebut" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="heureFin" class="form-label">Heure Fin <span class="req">*</span></label>
+                            <input type="time" class="form-control" id="heureFin" name="heureFin" required>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="radioDefault" id="reguliere"
+                                onchange="reguilereE()">
+                            <label class="form-check-label" for="reguliere">
+                                Régulièrement
+                            </label>
+                        </div>
+
+                        <div id="reguliereOptions">
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="semaineA" value="False">
+                                <label class="form-check-label" for="semaineA">Semaine A</label>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="semaineB">
+                                <label class="form-check-label" for="semaineB">Semaine B</label>
+                            </div>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="radioDefault" id="uneSeeulFois"
+                                onchange="reguilereE()">
+                            <label class="form-check-label" for="uneSeeulFois">
+                                Une seule fois
+                            </label>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="nom" class="form-label">Votre Nom & Prénom <span class="req">*</span></label>
+                            <input type="name" class="form-control" id="nom" aria-describedby="emailHelp" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="courriel" class="form-label">Votre E-Mail <span class="req">*</span></label>
+                            <input type="email" class="form-control" id="courriel" aria-describedby="emailHelp"
+                                required>
+                        </div>
+
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button id="nouveau" type="submit" class="btn btn-primary">Inscrire</button>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>

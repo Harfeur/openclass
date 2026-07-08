@@ -17,34 +17,36 @@ fs.readFile("bdd.sql", "utf-8", (err, data) => {
 });
 
 
-//app.use('/static', express.static(path.join(__dirname, 'public')));
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static('public'))
 
+app.get('/', async (req, res) => {
+    try {
+        const [matieresRes, groupesRes] = await Promise.all([
+            fetch("http://localhost:3000/matieres"),
+            fetch("http://localhost:3000/groupes")
+        ]);
 
-app.get('/', (req, res) => {
-    res.render('index');
+        const matieres = await matieresRes.json();
+        const groupes = await groupesRes.json();
+
+        res.render('index', {
+            data_matiere: matieres,
+            data_groupes: groupes
+        });
+
+    } catch (err) {
+
+        res.status(500).send(err);
+    }
 });
 
 app.get('/try', (req, res) => {
-    const matieres = fetch("http://localhost:3000/matieres")
-        .then(res => console.log(res.data))
-    console.log("ok")
-    const query = database.prepare('SELECT matiere FROM matieres;');
-    //console.log(query.all());
-
-    const data = {
-        nom: "Daniel",
-        db: query.all()
-
-    }
-    console.log(data.db)
-    //console.log("a", query.all()[0])
-    res.render('try', { data });
-
-
+    res.render('try');
 });
+
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
@@ -58,7 +60,7 @@ app.get('/matieres', (req, res) => {
 
 app.get('/groupes', (req, res) => {
     //console.log(req.query);
-    const query = database.prepare('SELECT id, group FROM groupes;');
+    const query = database.prepare('SELECT id, groupe FROM groupes;');
     res.send(query.all());
 });
 
@@ -96,17 +98,5 @@ app.post('/nouveau', (req, res) => {
 
 
 /*
- if (data.nom === "") {
-        res.status(400).send("La case Nom doit etre remplie")
-    } else if (data.email === "") {
-        res.status(400).send("La case EMAIL doit etre remplie")
-    } else if (data.date === "") {
-        res.status(400).send("La case Date doit etre remplie")
-    } else if (data.timeStart === "") {
-        res.status(400).send("La case Date Debut doit etre remplie")
-    } else if (data.timeEnd === "") {
-        res.status(400).send("La case Date Fin doit etre remplie")
-    } else {
-        const query = database.prepare(`INSERT INTO Cours (id_matiere, id_groupe, semaine_a, semaine_b, date, debut, fin, prof, courriel) VALUES (${data.matiere}, ${data.groupe}, ${data.semaineA}, ${data.semaineB}, '${data.date}', '${data.timeStart}', '${data.timeEnd}', '${data.nom}', '${data.email}');`);
-        res.send(query.all());
-    }*/
+...
+*/
