@@ -1,5 +1,8 @@
-function reguilereE(elt) {
-    //const reguliereOptions = document.querySelector("reguliereOptions")
+function reguilereE() {
+    const reguliere = document.getElementById("reguliere");
+    const uneSeulFois = document.getElementById("uneSeeulFois");
+    const reguliereOptions = document.getElementById("reguliereOptions");
+
     if (reguliere.checked) {
         console.log("Coché");
         reguliereOptions.style.display = "block";
@@ -7,32 +10,25 @@ function reguilereE(elt) {
         console.log("Décoché");
         reguliereOptions.style.display = "none";
     }
-    // var option1 = document.createElement("div")
-    // option1.className = "mb-3 form-check"
-    // option1.innerHTML = `<input type="checkbox" class="form-check-input" id="semaineA" value="False"> <label class="form-check-label" for="semaineA">Semaine A</label>`
-    // reguliereOptions.appendChild(option1)
-
-    //console.log("sa")
-    //alert("Vous Avez Clicker Reguilere")
 }
-
 document.addEventListener("DOMContentLoaded", function () {
     function f(e) {
         e.preventDefault();
-        const matiere = document.getElementById('matieres');
-        const groupe = document.getElementById('groupes');
-        const date = document.getElementById('date');
-        const heureDebut = document.getElementById('heureDebut');
-        const heureFin = document.getElementById('heureFin');
+        const matiere = document.getElementById('matieres').value;
+        const groupe = document.getElementById('groupes').value;
+        const date = document.getElementById('date').value;
+        const heureDebut = document.getElementById('heureDebut').value;
+        const heureFin = document.getElementById('heureFin').value;
 
         const reguliere = document.getElementById('reguliere');
         const semaineA = document.getElementById('semaineA');
         const semaineB = document.getElementById('semaineB');
 
 
-        const nom = document.getElementById('name').value;
-        console.log(semaineA.checked)
-        console.log(reguliere.checked)
+        const nom = document.getElementById('nom').value;
+        const courriel = document.getElementById('courriel').value;
+        // console.log(semaineA.checked)
+        // console.log(reguliere.checked)
 
 
 
@@ -43,18 +39,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                matiere: 2,
-                groupe: 4,
+                matiere: matiere,
+                groupe: groupe,
                 semaineA: semaineA.checked,
                 semaineB: semaineB.checked,
-                date: "2026-07-03",
-                timeStart: "08:00:00",
-                timeEnd: "10:00:00",
-                nom: name,
-                email: "daniel537hassan@gmail.com"
+                date: date,
+                timeStart: heureDebut,
+                timeEnd: heureFin,
+                nom: nom,
+                email: courriel
             })
         }).then((response) => {
             if (response.status === 400) {
+                const modalElement = document.getElementById("exampleModal");
+                const modal = bootstrap.Modal.getInstance(modalElement);
+
+                if (modal) {
+                    modal.hide();
+                }
                 var alertes = document.getElementById("alertes")
                 var newElement = document.createElement("div")
                 newElement.className = "alert alert-warning alert-dismissible fade show"

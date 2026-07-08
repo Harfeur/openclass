@@ -24,15 +24,19 @@ app.use(express.static('public'))
 
 app.get('/', async (req, res) => {
     try {
-        const [matieresRes, groupesRes] = await Promise.all([
+        const [calendrierRes, matieresRes, groupesRes] = await Promise.all([
+            fetch("http://localhost:3000/calendrier"),
             fetch("http://localhost:3000/matieres"),
             fetch("http://localhost:3000/groupes")
+
         ]);
 
+        const calendrier = await calendrierRes.json();
         const matieres = await matieresRes.json();
         const groupes = await groupesRes.json();
 
         res.render('index', {
+            data_calendrier: calendrier,
             data_matiere: matieres,
             data_groupes: groupes
         });
