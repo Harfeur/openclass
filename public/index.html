@@ -20,8 +20,12 @@
                 <img src="images/openclass-logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
                 OpenClass
             </a>
-            <button id="inscription" type="button" class="btn btn-success" data-bs-toggle="modal"
-                data-bs-target="#exampleModal">S'inscrire</button>
+            <div class="d-flex gap-2" role="group" aria-label="Actions">
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                    data-bs-target="#infoModal">Info</button>
+                <button id="inscription" type="button" class="btn btn-success" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">Ajouter un cours</button>
+            </div>
         </nav>
     </header>
 
@@ -148,6 +152,25 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" id="btnDeleteEvent">Supprimer</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Information -->
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="infoModalLabel">À propos de la classe ouverte</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>La classe ouverte vous permet de voir un cours d'un ou d'une collègue.</p>
+                    <p>Vous pouvez ajouter les séances de cours que vous ouvrez aux collègues via ce calendrier.</p>
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                 </div>
             </div>
