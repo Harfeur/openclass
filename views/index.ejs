@@ -317,14 +317,39 @@
             type: 'weekdays',
             weekly: false,
             validRange: ['08:00', '18:00'],
-            readOnlyRange: ['08:00', '18:00'],
             overlap: true,
             data: arr,
-            ondblclick: function(self, event) {
-                showEventDetails(event);
+            oncreate: function(self, events, e) {
+                if (events && events.length > 0) {
+                    const newEvent = events[0];
+                    const dateInput = document.getElementById('date');
+                    const debutInput = document.getElementById('heureDebut');
+                    const finInput = document.getElementById('heureFin');
+
+                    if (dateInput && newEvent.date) {
+                        dateInput.value = newEvent.date.substring(0, 10);
+                    }
+                    if (debutInput && newEvent.start) {
+                        debutInput.value = newEvent.start;
+                    }
+                    if (finInput && newEvent.end) {
+                        finInput.value = newEvent.end;
+                    }
+
+                    // Supprimer l'élément temporaire pour garder la vue synchronisée avec la base
+                    self.deleteEvents(newEvent);
+
+                    const modalElement = document.getElementById('exampleModal');
+                    if (modalElement) {
+                        const modal = bootstrap.Modal.getInstance(modalElement) || bootstrap.Modal.getOrCreateInstance(modalElement);
+                        modal.show();
+                    }
+                }
             },
-            onedition: function(self, event) {
-                showEventDetails(event);
+            ondblclick: function(self, event) {
+                if (event && (event.matiere || event.prof || event.groupe)) {
+                    showEventDetails(event);
+                }
             }
         });
 
@@ -390,7 +415,7 @@
             const item = e.target.closest('.lm-schedule-item');
             if (!item) return;
             const eventData = item.event || arr.find((el) => String(el.guid) === String(item.id) || String(el.id) === String(item.id));
-            if (eventData) {
+            if (eventData && (eventData.matiere || eventData.prof || eventData.groupe)) {
                 showEventDetails(eventData);
             }
         });
