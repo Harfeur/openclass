@@ -16,6 +16,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@calendarjs/ce": "^1.1.0",
     "bootstrap": "^5.3.8",
     "calendarjs": "^0.2.1",
     "ejs": "^6.0.1",
