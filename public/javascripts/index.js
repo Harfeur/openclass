@@ -1,6 +1,5 @@
 function reguilereE() {
     const reguliere = document.getElementById("reguliere");
-    const uneSeulFois = document.getElementById("uneSeeulFois");
     const reguliereOptions = document.getElementById("reguliereOptions");
 
     if (reguliere.checked) {
@@ -20,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const heureDebut = document.getElementById('heureDebut').value;
         const heureFin = document.getElementById('heureFin').value;
 
-        const reguliere = document.getElementById('reguliere');
         const semaineA = document.getElementById('semaineA');
         const semaineB = document.getElementById('semaineB');
 
