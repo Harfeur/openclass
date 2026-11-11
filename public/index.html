@@ -112,11 +112,11 @@
                             <label for="nom" class="form-label">Votre Nom & Prénom <span class="req">*</span></label>
                             <input type="name" class="form-control" id="nom" aria-describedby="emailHelp" required>
                         </div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="courriel" class="form-label">Votre E-Mail <span class="req">*</span></label>
                             <input type="email" class="form-control" id="courriel" aria-describedby="emailHelp"
                                 required>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="modal-footer">
@@ -137,15 +137,17 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div id="eventDetailsAlertes"></div>
                     <p class="mb-2"><strong>Matière :</strong> <span id="eventMatiere"></span></p>
                     <p class="mb-2"><strong>Groupe :</strong> <span id="eventGroupe"></span></p>
                     <p class="mb-2"><strong>Enseignant :</strong> <span id="eventProf"></span></p>
-                    <p class="mb-2"><strong>Courriel :</strong> <span id="eventCourriel"></span></p>
+                    <!-- <p class="mb-2"><strong>Courriel :</strong> <span id="eventCourriel"></span></p> -->
                     <p class="mb-2"><strong>Date :</strong> <span id="eventDate"></span></p>
                     <p class="mb-2"><strong>Horaires :</strong> <span id="eventHoraires"></span></p>
                     <p class="mb-2"><strong>Périodicité :</strong> <span id="eventFrequence"></span></p>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnDeleteEvent">Supprimer</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                 </div>
             </div>

@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS 'Cours' (
 	'debut' TIME NOT NULL,
 	'fin' TIME NOT NULL,
 	'prof' TEXT NOT NULL,
-	'courriel' TEXT NOT NULL,
+	'courriel' TEXT,
 	PRIMARY KEY('id' AUTOINCREMENT) ,
 	FOREIGN KEY ('id_groupe') REFERENCES 'Groupes'('id')
 	ON UPDATE NO ACTION ON DELETE NO ACTION,

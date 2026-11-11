@@ -2,6 +2,7 @@ let vacancesData = [];
 let obj = [];
 const arr = [];
 let schedule = null;
+let currentSelectedEvent = null;
 
 function reguilereE() {
     const reguliere = document.getElementById("reguliere");
@@ -66,10 +67,17 @@ window.vacancesData = vacancesData;
 
 function showEventDetails(eventData) {
     if (!eventData) return;
+    currentSelectedEvent = eventData;
+
+    const alertesEl = document.getElementById('eventDetailsAlertes');
+    if (alertesEl) {
+        alertesEl.innerHTML = '';
+    }
+
     document.getElementById('eventMatiere').textContent = eventData.matiere || '';
     document.getElementById('eventGroupe').textContent = eventData.groupe || '';
     document.getElementById('eventProf').textContent = eventData.prof || '';
-    document.getElementById('eventCourriel').textContent = eventData.courriel || '';
+    // document.getElementById('eventCourriel').textContent = eventData.courriel || '';
     document.getElementById('eventDate').textContent = eventData.date || '';
     document.getElementById('eventHoraires').textContent = `${eventData.start || eventData.debut || ''} - ${eventData.end || eventData.fin || ''}`;
 
@@ -102,7 +110,8 @@ function genererEvenements(element) {
     let matiere = element.matiere || '';
     let groupe = element.groupe || '';
     const prof = element.prof || element.nom || '';
-    const courriel = element.courriel || element.email || '';
+    // const courriel = element.courriel || element.email || '';
+    const courriel = '';
     const date = element.date || '';
     const debut = element.debut || element.start || element.timeStart || '';
     const fin = element.fin || element.end || element.timeEnd || '';
@@ -129,11 +138,14 @@ function genererEvenements(element) {
 
     const title = matiere && groupe ? `${matiere} (${groupe})` : (matiere || groupe || element.title || 'Cours');
     const result = [];
+    const courseId = element.id || element.cours_id || null;
 
     if (!isRecurrent) {
         if (!estEnVacances(date)) {
             result.push({
-                guid: String(element.guid || element.id || ('evt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7))),
+                id: courseId,
+                cours_id: courseId,
+                guid: String(element.guid || (courseId ? `cours_${courseId}` : ('evt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7)))),
                 title: title,
                 description: prof,
                 date: date,
@@ -165,7 +177,7 @@ function genererEvenements(element) {
         const endDate = new Date(startYear + 1, 5, 30, 12, 0, 0);
 
         let cur = new Date(startDate);
-        const baseGuid = element.guid || element.id || ('evt_' + Date.now());
+        const baseGuid = element.guid || (courseId ? `cours_${courseId}` : ('evt_' + Date.now()));
         while (cur <= endDate) {
             if (cur.getDay() === targetWeekday) {
                 const curDay = cur.getDay();
@@ -183,6 +195,8 @@ function genererEvenements(element) {
 
                     if (!estEnVacances(dateStr)) {
                         result.push({
+                            id: courseId,
+                            cours_id: courseId,
                             guid: `${baseGuid}_${dateStr}`,
                             title: title,
                             description: prof,
@@ -206,6 +220,96 @@ function genererEvenements(element) {
         }
     }
     return result;
+}
+
+async function supprimerEvenementSelectionne() {
+    if (!currentSelectedEvent) return;
+
+    const eventId = currentSelectedEvent.id || currentSelectedEvent.cours_id;
+    const eventGuid = currentSelectedEvent.guid;
+
+    try {
+        if (eventId) {
+            const res = await fetch('/supprimer', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: eventId })
+            });
+
+            if (!res.ok) {
+                const txt = await res.text();
+                const alertesEl = document.getElementById('eventDetailsAlertes');
+                if (alertesEl) {
+                    alertesEl.innerHTML = `
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <span>${txt || "Erreur lors de la suppression."}</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                } else {
+                    alert(txt || "Erreur lors de la suppression.");
+                }
+                return;
+            }
+        }
+
+        // Supprimer toutes les occurrences associées du tableau local et du calendrier
+        const guidsToDelete = [];
+
+        // Pour un événement récurrent, le guid est de la forme "cours_X_YYYY-MM-DD"
+        // Pour un événement ponctuel, le guid est "cours_X"
+        // On utilise eventId (cours_id) comme critère principal pour trouver toutes les occurrences
+        if (eventId) {
+            for (let i = arr.length - 1; i >= 0; i--) {
+                const item = arr[i];
+                const itemCourseId = item.id || item.cours_id;
+                if (itemCourseId && String(itemCourseId) === String(eventId)) {
+                    guidsToDelete.push(item.guid);
+                    arr.splice(i, 1);
+                }
+            }
+        } else if (eventGuid) {
+            // Fallback: si pas d'eventId, on utilise le guid
+            const baseGuid = eventGuid.includes('_') ? eventGuid.substring(0, eventGuid.lastIndexOf('_')) : eventGuid;
+            for (let i = arr.length - 1; i >= 0; i--) {
+                const item = arr[i];
+                if (String(item.guid) === String(eventGuid) || String(item.guid).startsWith(baseGuid + '_')) {
+                    guidsToDelete.push(item.guid);
+                    arr.splice(i, 1);
+                }
+            }
+        }
+
+        if (schedule && guidsToDelete.length > 0) {
+            if (typeof schedule.deleteEvents === 'function') {
+                schedule.deleteEvents(guidsToDelete);
+            }
+        }
+
+        // Fermer la modale
+        const eventModalEl = document.getElementById('eventDetailsModal');
+        if (eventModalEl) {
+            const modal = bootstrap.Modal.getInstance(eventModalEl) || bootstrap.Modal.getOrCreateInstance(eventModalEl);
+            if (modal) {
+                modal.hide();
+            }
+        }
+        currentSelectedEvent = null;
+    } catch (err) {
+        console.error("Erreur lors de la suppression de l'événement:", err);
+        const alertesEl = document.getElementById('eventDetailsAlertes');
+        if (alertesEl) {
+            alertesEl.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span>Impossible de joindre le serveur pour supprimer l'événement.</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        }
+    }
 }
 
 function ajouterEvenementCalendrier(eventData) {
@@ -444,7 +548,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const heureDebut = document.getElementById("heureDebut") ? document.getElementById("heureDebut").value : "";
             const heureFin = document.getElementById("heureFin") ? document.getElementById("heureFin").value : "";
             const nom = document.getElementById("nom") ? document.getElementById("nom").value : "";
-            const courriel = document.getElementById("courriel") ? document.getElementById("courriel").value : "";
+            // const courriel = document.getElementById("courriel") ? document.getElementById("courriel").value : "";
+            const courriel = "";
             const isSemaineA = (reguliere && reguliere.checked && semaineA) ? semaineA.checked : false;
             const isSemaineB = (reguliere && reguliere.checked && semaineB) ? semaineB.checked : false;
 
@@ -463,12 +568,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     timeStart: heureDebut,
                     timeEnd: heureFin,
                     nom: nom,
-                    email: courriel
+                    // email: courriel
+                    email: ""
                 })
-            }).then((response) => {
+            }).then(async (response) => {
                 if (response.status === 200) {
+                    let resData = null;
+                    try {
+                        resData = await response.json();
+                    } catch (e) {}
+                    const newId = resData && resData.id ? resData.id : null;
+
                     if (typeof ajouterEvenementCalendrier === 'function') {
                         ajouterEvenementCalendrier({
+                            id: newId,
                             matiere: matiereText || matiere,
                             groupe: groupeText || groupe,
                             date: date,
@@ -504,5 +617,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 afficherAlerte("Impossible de contacter le serveur. Veuillez réessayer.", "danger");
             });
         }, true);
+    }
+
+    const btnDeleteEvent = document.getElementById("btnDeleteEvent");
+    if (btnDeleteEvent) {
+        btnDeleteEvent.addEventListener("click", supprimerEvenementSelectionne);
     }
 });

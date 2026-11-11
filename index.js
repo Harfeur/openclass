@@ -122,8 +122,6 @@ app.get('/vacances', (req, res) => {
 
 
 app.post('/nouveau', (req, res) => {
-    const id = database.prepare(`SELECT MAX(id) AS id FROM Cours;`, { returnArrays: true }).all()[0][0];
-    // console.log(id);
     const data = req.body;
     if (data.matiere === "") {
         res.status(400).send("Selectioner une matière")
@@ -137,11 +135,44 @@ app.post('/nouveau', (req, res) => {
         res.status(400).send("Choisisez fin de heure")
     } else if (data.nom === "") {
         res.status(400).send("La case Nom doit etre remplie")
-    } else if (data.email === "") {
-        res.status(400).send("La case E-Mail doit etre remplie")
+    // } else if (data.email === "") {
+    //     res.status(400).send("La case E-Mail doit etre remplie")
     } else {
-        const query = database.prepare(`INSERT INTO Cours (id_matiere, id_groupe, semaine_a, semaine_b, date, debut, fin, prof, courriel) VALUES (${data.matiere}, ${data.groupe}, ${data.semaineA}, ${data.semaineB}, '${data.date}', '${data.timeStart}', '${data.timeEnd}', '${data.nom}', '${data.email}');`);
-        res.send(query.all());
+        // const query = database.prepare(`INSERT INTO Cours (id_matiere, id_groupe, semaine_a, semaine_b, date, debut, fin, prof, courriel) VALUES (${data.matiere}, ${data.groupe}, ${data.semaineA}, ${data.semaineB}, '${data.date}', '${data.timeStart}', '${data.timeEnd}', '${data.nom}', '${data.email}');`);
+        const query = database.prepare(`INSERT INTO Cours (id_matiere, id_groupe, semaine_a, semaine_b, date, debut, fin, prof, courriel) VALUES (${data.matiere}, ${data.groupe}, ${data.semaineA}, ${data.semaineB}, '${data.date}', '${data.timeStart}', '${data.timeEnd}', '${data.nom}', NULL);`);
+        const result = query.run();
+        const insertedId = result ? result.lastInsertRowid : null;
+        res.status(200).json({ id: insertedId, success: true });
+    }
+});
+
+app.post('/supprimer', (req, res) => {
+    const id = req.body && (req.body.id || req.body.cours_id);
+    if (!id) {
+        return res.status(400).send("ID du cours requis pour la suppression");
+    }
+    try {
+        const query = database.prepare(`DELETE FROM Cours WHERE id = ?;`);
+        query.run(id);
+        res.status(200).json({ success: true, message: "Événement supprimé avec succès" });
+    } catch (err) {
+        console.error("Erreur suppression cours:", err);
+        res.status(500).send("Erreur lors de la suppression du cours");
+    }
+});
+
+app.delete('/cours/:id', (req, res) => {
+    const id = req.params.id;
+    if (!id) {
+        return res.status(400).send("ID du cours requis pour la suppression");
+    }
+    try {
+        const query = database.prepare(`DELETE FROM Cours WHERE id = ?;`);
+        query.run(id);
+        res.status(200).json({ success: true, message: "Événement supprimé avec succès" });
+    } catch (err) {
+        console.error("Erreur suppression cours:", err);
+        res.status(500).send("Erreur lors de la suppression du cours");
     }
 });
 
