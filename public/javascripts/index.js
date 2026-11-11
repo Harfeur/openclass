@@ -226,7 +226,44 @@ function genererEvenements(element) {
     return result;
 }
 
-async function supprimerEvenementSelectionne() {
+function afficherConfirmationSuppression() {
+    if (!currentSelectedEvent) return;
+
+    const prof = currentSelectedEvent.prof || currentSelectedEvent.nom || 'Un enseignant';
+    const isSemaineA = currentSelectedEvent.semaine_a === 1 || currentSelectedEvent.semaine_a === '1' || currentSelectedEvent.semaine_a === true || currentSelectedEvent.semaine_a === 'true';
+    const isSemaineB = currentSelectedEvent.semaine_b === 1 || currentSelectedEvent.semaine_b === '1' || currentSelectedEvent.semaine_b === true || currentSelectedEvent.semaine_b === 'true';
+    const estRegulier = isSemaineA || isSemaineB;
+
+    let message = `Vous allez supprimer un cours en classe ouverte. Merci de ne supprimer que les événements vous concernant, et non ceux de vos collègues. Ce cours appartient à ${prof}. Supprimer ?`;
+
+    if (estRegulier) {
+        message += `<br><br>Cela va supprimer également toutes les occurences hebdomadaires.`;
+    }
+
+    const deleteConfirmMessageEl = document.getElementById('deleteConfirmMessage');
+    if (deleteConfirmMessageEl) {
+        deleteConfirmMessageEl.innerHTML = message;
+    }
+
+    // Fermer la modale de détail avant d'ouvrir la modale de confirmation
+    // pour éviter le problème de backdrop Bootstrap avec les modales empilées
+    const eventModalEl = document.getElementById('eventDetailsModal');
+    if (eventModalEl) {
+        const eventModal = bootstrap.Modal.getInstance(eventModalEl) || bootstrap.Modal.getOrCreateInstance(eventModalEl);
+        eventModal.hide();
+    }
+
+    // Ouvrir la modale de confirmation après un court délai pour laisser le temps à la modale de détail de se fermer
+    setTimeout(() => {
+        const deleteConfirmModalEl = document.getElementById('deleteConfirmModal');
+        if (deleteConfirmModalEl) {
+            const modal = bootstrap.Modal.getInstance(deleteConfirmModalEl) || bootstrap.Modal.getOrCreateInstance(deleteConfirmModalEl);
+            modal.show();
+        }
+    }, 300);
+}
+
+async function executerSuppression() {
     if (!currentSelectedEvent) return;
 
     const eventId = currentSelectedEvent.id || currentSelectedEvent.cours_id;
@@ -293,7 +330,15 @@ async function supprimerEvenementSelectionne() {
             }
         }
 
-        // Fermer la modale
+        // Fermer les modales
+        const deleteConfirmModalEl = document.getElementById('deleteConfirmModal');
+        if (deleteConfirmModalEl) {
+            const modal = bootstrap.Modal.getInstance(deleteConfirmModalEl) || bootstrap.Modal.getOrCreateInstance(deleteConfirmModalEl);
+            if (modal) {
+                modal.hide();
+            }
+        }
+
         const eventModalEl = document.getElementById('eventDetailsModal');
         if (eventModalEl) {
             const modal = bootstrap.Modal.getInstance(eventModalEl) || bootstrap.Modal.getOrCreateInstance(eventModalEl);
@@ -625,6 +670,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const btnDeleteEvent = document.getElementById("btnDeleteEvent");
     if (btnDeleteEvent) {
-        btnDeleteEvent.addEventListener("click", supprimerEvenementSelectionne);
+        btnDeleteEvent.addEventListener("click", afficherConfirmationSuppression);
+    }
+
+    const btnConfirmDelete = document.getElementById("btnConfirmDelete");
+    if (btnConfirmDelete) {
+        btnConfirmDelete.addEventListener("click", executerSuppression);
     }
 });

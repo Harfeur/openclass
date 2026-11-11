@@ -3,6 +3,7 @@ const app = express();
 const port = 3000;
 const path = require('path');
 const fs = require('node:fs');
+const cron = require('node-cron');
 
 app.use(express.json()); // for parsing application/json
 
@@ -180,3 +181,53 @@ app.delete('/cours/:id', (req, res) => {
 /*
 ...
 */
+
+// Sauvegarde automatique de la base de données
+const backupDir = path.join(__dirname, 'backup');
+const MAX_BACKUPS = 5;
+const dbPath = path.join(__dirname, 'database.db');
+
+function sauvegarderBase() {
+    // Créer le dossier backup s'il n'existe pas
+    if (!fs.existsSync(backupDir)) {
+        fs.mkdirSync(backupDir, { recursive: true });
+    }
+
+    // Générer le nom du fichier de sauvegarde avec la date du jour
+    const now = new Date();
+    const dateStr = now.getFullYear()
+        + String(now.getMonth() + 1).padStart(2, '0')
+        + String(now.getDate()).padStart(2, '0');
+    const backupFileName = `database_backup_${dateStr}.db`;
+    const backupFilePath = path.join(backupDir, backupFileName);
+
+    try {
+        // Copier la base de données
+        fs.copyFileSync(dbPath, backupFilePath);
+        console.log(`Sauvegarde créée : ${backupFileName}`);
+
+        // Nettoyer les anciennes sauvegardes en gardant les 5 plus récentes
+        const backups = fs.readdirSync(backupDir)
+            .filter(file => file.startsWith('database_backup_') && file.endsWith('.db'))
+            .sort() // tri alphabétique = chronologique grâce au format de nommage
+            .reverse(); // les plus récentes en premier
+
+        if (backups.length > MAX_BACKUPS) {
+            const toDelete = backups.slice(MAX_BACKUPS);
+            for (const oldBackup of toDelete) {
+                fs.unlinkSync(path.join(backupDir, oldBackup));
+                console.log(`Ancienne sauvegarde supprimée : ${oldBackup}`);
+            }
+        }
+    } catch (err) {
+        console.error(`Erreur lors de la sauvegarde : ${err.message}`);
+    }
+}
+
+// Planifier la sauvegarde tous les jours à 4:00 du matin
+cron.schedule('0 4 * * *', sauvegarderBase, {
+    scheduled: true,
+    timezone: 'Europe/Paris'
+});
+
+console.log('Sauvegarde automatique planifiée à 4:00 (heure de Paris).');

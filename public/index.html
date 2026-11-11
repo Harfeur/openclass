@@ -154,6 +154,25 @@
         </div>
     </div>
 
+    <!-- Modal Confirmation de Suppression -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteConfirmModalLabel">Confirmer la suppression</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteConfirmMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" style="background-color: gray; color: white;" data-bs-dismiss="modal">Non, annuler</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmDelete">Oui, supprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <a href="#">OpenClass</a> © 2026 par Daniel Hasan & Maxime Chourré est sous licence
         <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a><img
