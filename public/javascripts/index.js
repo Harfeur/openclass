@@ -1,85 +1,133 @@
 function reguilereE() {
     const reguliere = document.getElementById("reguliere");
     const reguliereOptions = document.getElementById("reguliereOptions");
+    const semaineA = document.getElementById("semaineA");
+    const semaineB = document.getElementById("semaineB");
 
-    if (reguliere.checked) {
-        console.log("Coché");
-        reguliereOptions.style.display = "block";
+    if (reguliere && reguliere.checked) {
+        if (reguliereOptions) {
+            reguliereOptions.style.display = "block";
+        }
     } else {
-        console.log("Décoché");
-        reguliereOptions.style.display = "none";
+        if (reguliereOptions) {
+            reguliereOptions.style.display = "none";
+        }
+        if (semaineA) {
+            semaineA.checked = false;
+        }
+        if (semaineB) {
+            semaineB.checked = false;
+        }
     }
 }
+
+function afficherAlerte(message, type = "danger") {
+    const alertes = document.getElementById("alertes");
+    if (!alertes) return;
+    alertes.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+}
+
+function effacerAlertes() {
+    const alertes = document.getElementById("alertes");
+    if (alertes) {
+        alertes.innerHTML = "";
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-    function f(e) {
-        e.preventDefault();
-        const matiere = document.getElementById('matieres').value;
-        const groupe = document.getElementById('groupes').value;
-        const date = document.getElementById('date').value;
-        const heureDebut = document.getElementById('heureDebut').value;
-        const heureFin = document.getElementById('heureFin').value;
+    const modalElement = document.getElementById("exampleModal");
+    if (modalElement) {
+        modalElement.addEventListener("hidden.bs.modal", function () {
+            effacerAlertes();
+        });
+    }
 
-        const semaineA = document.getElementById('semaineA');
-        const semaineB = document.getElementById('semaineB');
+    const uneSeuleFois = document.getElementById("uneSeeulFois");
+    const reguliere = document.getElementById("reguliere");
+    if (uneSeuleFois) {
+        uneSeuleFois.addEventListener("change", reguilereE);
+    }
+    if (reguliere) {
+        reguliere.addEventListener("change", reguilereE);
+    }
 
+    const formInscr = document.getElementById("form_inscr");
+    if (formInscr) {
+        formInscr.addEventListener("submit", function (e) {
+            e.preventDefault();
+            effacerAlertes();
 
-        const nom = document.getElementById('nom').value;
-        const courriel = document.getElementById('courriel').value;
-        // console.log(semaineA.checked)
-        // console.log(reguliere.checked)
+            const reguliere = document.getElementById("reguliere");
+            const semaineA = document.getElementById("semaineA");
+            const semaineB = document.getElementById("semaineB");
 
+            if (reguliere && reguliere.checked) {
+                const checkedA = semaineA && semaineA.checked;
+                const checkedB = semaineB && semaineB.checked;
 
-
-        fetch('http://localhost:3000/nouveau', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                matiere: matiere,
-                groupe: groupe,
-                semaineA: semaineA.checked,
-                semaineB: semaineB.checked,
-                date: date,
-                timeStart: heureDebut,
-                timeEnd: heureFin,
-                nom: nom,
-                email: courriel
-            })
-        }).then((response) => {
-            if (response.status === 200) {
-                document.getElementById("form_inscr").reset();
-                const reguliereOptions = document.getElementById("reguliereOptions");
-                if (reguliereOptions) {
-                    reguliereOptions.style.display = "none";
+                if (!checkedA && !checkedB) {
+                    afficherAlerte("Veuillez cocher Semaine A et / ou Semaine B pour une visite régulière.", "danger");
+                    return;
                 }
-                const modalElement = document.getElementById("exampleModal");
-                const modal = bootstrap.Modal.getInstance(modalElement) || bootstrap.Modal.getOrCreateInstance(modalElement);
-                if (modal) {
-                    modal.hide();
-                }
-            } else if (response.status === 400) {
-                const modalElement = document.getElementById("exampleModal");
-                const modal = bootstrap.Modal.getInstance(modalElement);
-
-                if (modal) {
-                    modal.hide();
-                }
-                var alertes = document.getElementById("alertes")
-                var newElement = document.createElement("div")
-                newElement.className = "alert alert-warning alert-dismissible fade show"
-                newElement.role = "alert"
-                response.text().then(txt => {
-                    newElement.innerHTML = `${txt}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`
-                    alertes.appendChild(newElement)
-                })
             }
 
-        })
+            const matiere = document.getElementById("matieres") ? document.getElementById("matieres").value : "";
+            const groupe = document.getElementById("groupes") ? document.getElementById("groupes").value : "";
+            const date = document.getElementById("date") ? document.getElementById("date").value : "";
+            const heureDebut = document.getElementById("heureDebut") ? document.getElementById("heureDebut").value : "";
+            const heureFin = document.getElementById("heureFin") ? document.getElementById("heureFin").value : "";
+            const nom = document.getElementById("nom") ? document.getElementById("nom").value : "";
+            const courriel = document.getElementById("courriel") ? document.getElementById("courriel").value : "";
+
+            fetch('/nouveau', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    matiere: matiere,
+                    groupe: groupe,
+                    semaineA: (reguliere && reguliere.checked && semaineA) ? semaineA.checked : false,
+                    semaineB: (reguliere && reguliere.checked && semaineB) ? semaineB.checked : false,
+                    date: date,
+                    timeStart: heureDebut,
+                    timeEnd: heureFin,
+                    nom: nom,
+                    email: courriel
+                })
+            }).then((response) => {
+                if (response.status === 200) {
+                    formInscr.reset();
+                    const reguliereOptions = document.getElementById("reguliereOptions");
+                    if (reguliereOptions) {
+                        reguliereOptions.style.display = "none";
+                    }
+                    effacerAlertes();
+                    if (modalElement) {
+                        const modal = bootstrap.Modal.getInstance(modalElement) || bootstrap.Modal.getOrCreateInstance(modalElement);
+                        if (modal) {
+                            modal.hide();
+                        }
+                    }
+                } else {
+                    response.text().then((txt) => {
+                        const message = txt || "Une erreur est survenue lors de l'enregistrement.";
+                        afficherAlerte(message, "danger");
+                    }).catch(() => {
+                        afficherAlerte("Une erreur est survenue lors de l'enregistrement.", "danger");
+                    });
+                }
+            }).catch((err) => {
+                afficherAlerte("Impossible de contacter le serveur. Veuillez réessayer.", "danger");
+            });
+        }, true);
     }
-    document.getElementById("form_inscr").addEventListener("submit", f, true);
 });
 
 /*

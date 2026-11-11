@@ -22,6 +22,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use('/vendor/calendarjs', express.static(path.join(__dirname, 'node_modules/@calendarjs/ce/dist')));
+app.use('/vendor/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
 
 app.get('/', async (req, res) => {
     try {
