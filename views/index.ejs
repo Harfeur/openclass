@@ -6,11 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Open Class</title>
     <script src="https://cdn.jsdelivr.net/npm/lemonadejs/dist/lemonade.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/index.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/style.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/lemonadejs/dist/lemonade.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/index.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/style.css" />
+    <script src="/vendor/calendarjs/index.js"></script>
+    <link rel="stylesheet" href="/vendor/calendarjs/style.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="/stylesheets/index.css" />
@@ -153,6 +150,29 @@
             </div>
         </div>
     </div>
+    <!-- Modal Détails Evénement -->
+    <div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="eventDetailsModalLabel">Détails du cours</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2"><strong>Matière :</strong> <span id="eventMatiere"></span></p>
+                    <p class="mb-2"><strong>Groupe :</strong> <span id="eventGroupe"></span></p>
+                    <p class="mb-2"><strong>Enseignant :</strong> <span id="eventProf"></span></p>
+                    <p class="mb-2"><strong>Courriel :</strong> <span id="eventCourriel"></span></p>
+                    <p class="mb-2"><strong>Date :</strong> <span id="eventDate"></span></p>
+                    <p class="mb-2"><strong>Horaires :</strong> <span id="eventHoraires"></span></p>
+                    <p class="mb-2"><strong>Périodicité :</strong> <span id="eventFrequence"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="/javascripts/index.js"></script>
 
 
@@ -171,44 +191,82 @@
 
     <script>
         const { Schedule } = calendarjs;
-        const calender = '<%- JSON.stringify(data_calendrier) %>'
+        const calender = '<%- JSON.stringify(data_calendrier) %>';
         const obj = JSON.parse(calender);
-        console.log(obj[0].id)
 
+        function showEventDetails(eventData) {
+            if (!eventData) return;
+            document.getElementById('eventMatiere').textContent = eventData.matiere || '';
+            document.getElementById('eventGroupe').textContent = eventData.groupe || '';
+            document.getElementById('eventProf').textContent = eventData.prof || '';
+            document.getElementById('eventCourriel').textContent = eventData.courriel || '';
+            document.getElementById('eventDate').textContent = eventData.date || '';
+            document.getElementById('eventHoraires').textContent = `${eventData.start || eventData.debut || ''} - ${eventData.end || eventData.fin || ''}`;
 
-        // console.log(calender);
-        // const element = ""
-        // for (let index = 0; index < calender.length; index++) {
-        //     element + "" + calender[index];
+            let frequence = 'Une seule fois';
+            const isSemaineA = eventData.semaine_a === 1 || eventData.semaine_a === '1' || eventData.semaine_a === true || eventData.semaine_a === 'true';
+            const isSemaineB = eventData.semaine_b === 1 || eventData.semaine_b === '1' || eventData.semaine_b === true || eventData.semaine_b === 'true';
 
-        // }
-        // calender.forEach(function (data, index) {
-        //     console.log(data);
-        // });
-        // console.log(element);
+            if (isSemaineA && isSemaineB) {
+                frequence = 'Régulier (Semaine A et Semaine B)';
+            } else if (isSemaineA) {
+                frequence = 'Régulier (Semaine A)';
+            } else if (isSemaineB) {
+                frequence = 'Régulier (Semaine B)';
+            }
+            document.getElementById('eventFrequence').textContent = frequence;
 
-        //`{ guid:i}, title:element.nom}, weekday:element.date.getDay()}, start:debut}, end:fin}, color: '#3498db', readonly: true }`
-        const arr = []
-        for (let index = 0; index < obj.length; index++) {
-            const element = obj[index];
-            console.log(element)
-            arr.push({ guid: index, title: element.nom, weekday: new Date(element.date).getDay(), start: element.debut, end: element.fin, color: '#3498db', readonly: true })
-
+            const eventModalEl = document.getElementById('eventDetailsModal');
+            const modal = bootstrap.Modal.getInstance(eventModalEl) || bootstrap.Modal.getOrCreateInstance(eventModalEl);
+            modal.show();
         }
 
-        Schedule(document.getElementById('schedule'), {
+        const arr = [];
+        for (let index = 0; index < obj.length; index++) {
+            const element = obj[index];
+            const dateObj = new Date(element.date + 'T12:00:00');
+            arr.push({
+                guid: String(element.id || index),
+                title: `${element.matiere} (${element.groupe})`,
+                description: element.prof,
+                weekday: dateObj.getDay(),
+                start: element.debut,
+                end: element.fin,
+                color: '#3498db',
+                matiere: element.matiere,
+                groupe: element.groupe,
+                prof: element.prof,
+                courriel: element.courriel,
+                date: element.date,
+                debut: element.debut,
+                fin: element.fin,
+                semaine_a: element.semaine_a,
+                semaine_b: element.semaine_b
+            });
+        }
+
+        const schedule = Schedule(document.getElementById('schedule'), {
             type: 'weekdays',
             weekly: true,
             validRange: ['08:00', '18:00'],
             readOnlyRange: ['08:00', '18:00'],
             overlap: true,
-            data: arr
+            data: arr,
+            ondblclick: function(self, event) {
+                showEventDetails(event);
+            },
+            onedition: function(self, event) {
+                showEventDetails(event);
+            }
+        });
 
-
-            //for(var i = 0; i<data_calendrier.length; i++) 
-
-
-
+        document.getElementById('schedule').addEventListener('click', function (e) {
+            const item = e.target.closest('.lm-schedule-item');
+            if (!item) return;
+            const eventData = item.event || obj.find((el, idx) => String(el.id) === String(item.id) || String(idx) === String(item.id));
+            if (eventData) {
+                showEventDetails(eventData);
+            }
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
@@ -217,14 +275,3 @@
 </body>
 
 </html>
-
-<!-- 
-{ guid: '1', title: 'Morning Meeting', weekday: 1, start: '08:00', end: '09:00', color: '#3498db', readonly: false },
-{ guid: '2', title: 'Lunch Break', weekday: 1, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true, description: "Test description" },
-{ guid: '3', title: 'Lunch Break', weekday: 2, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true },
-{ guid: '4', title: 'Lunch Break', weekday: 3, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true },
-{ guid: '5', title: 'Lunch Break', weekday: 4, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true },
-{ guid: '6', title: 'Lunch Break', weekday: 5, start: '12:00', end: '13:00', color: '#95a5a6', readonly: true },
-{ guid: '7', title: 'Project Work', weekday: 2, start: '10:30', end: '12:00', color: '#2ecc71', visible: true },
-{ guid: '8', title: 'Project Work', weekday: 2, start: '10:00', end: '11:00', color: '#2ecc71', visible: true }
--->

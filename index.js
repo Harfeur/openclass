@@ -20,7 +20,8 @@ fs.readFile("bdd.sql", "utf-8", (err, data) => {
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use(express.static('public'))
+app.use(express.static('public'));
+app.use('/vendor/calendarjs', express.static(path.join(__dirname, 'node_modules/@calendarjs/ce/dist')));
 
 app.get('/', async (req, res) => {
     try {
@@ -71,7 +72,7 @@ app.get('/groupes', (req, res) => {
 
 app.get('/calendrier', (req, res) => {
     //console.log(req.query);
-    const query = database.prepare('SELECT *, cours.id FROM Cours JOIN matieres ON matieres.id = cours.id_matiere JOIN groupes ON groupes.id = cours.id_matiere;');
+    const query = database.prepare('SELECT cours.id, cours.id_matiere, cours.id_groupe, cours.semaine_a, cours.semaine_b, cours.date, cours.debut, cours.fin, cours.prof, cours.courriel, matieres.matiere, groupes.groupe FROM Cours JOIN matieres ON matieres.id = cours.id_matiere JOIN groupes ON groupes.id = cours.id_groupe;');
     res.send(query.all());
 });
 
