@@ -17,6 +17,7 @@
 #schedule {
     grid-column: 1;
     grid-row: 1;
+    height: 100%;
 }
 
 .lm-schedule-item {
@@ -36,4 +37,10 @@ footer {
     padding: 5px;
     background-color: #abbaba;
     color: black;
+}
+
+footer img {
+    max-width: 1em;
+    max-height: 1em;
+    margin-left: 0.2em;
 }

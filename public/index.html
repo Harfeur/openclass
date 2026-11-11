@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Open Class</title>
+    <script src="/vendor/lemonadejs/lemonade.js"></script>
+    <script src="/vendor/calendarjs/index.js"></script>
+    <link rel="stylesheet" href="/vendor/calendarjs/style.css" />
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/stylesheets/index.css" />
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar navbar-light bg-light">
+            <a class="navbar-brand" href="/try">
+                <img src="images/openclass-logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+                OpenClass
+            </a>
+            <button id="inscription" type="button" class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">S'inscrire</button>
+        </nav>
+    </header>
+
+    <div class="container-fluid my-2">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 px-3 py-2 bg-light rounded border">
+            <div class="btn-group" role="group" aria-label="Navigation calendrier">
+                <button type="button" class="btn btn-outline-primary" id="btnPrev">&laquo; Semaine précédente</button>
+                <button type="button" class="btn btn-outline-secondary" id="btnToday">Aujourd'hui</button>
+                <button type="button" class="btn btn-outline-primary" id="btnNext">Semaine suivante &raquo;</button>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span id="weekLabel" class="fw-bold fs-5"></span>
+                <span id="weekTypeBadge" class="badge bg-primary fs-6"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="parent">
+        <div id="schedule"></div>
+    </div>
+
+    <!-- Modal Formulaire Inscription -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Je veux être visité</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div id="alertes" class="px-3 pt-2"></div>
+
+                <form id="form_inscr" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="matieres" class="form-label">Matière <span class="req">*</span></label>
+                            <select id="matieres" class="form-select" required>
+                                <option value="" selected disabled hidden>Choisisez</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="groupes" class="form-label">Groupe <span class="req">*</span></label>
+                            <select id="groupes" class="form-select" required>
+                                <option value="" selected disabled hidden>Choisisez</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Date <span class="req">*</span></label>
+                            <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="heureDebut" class="form-label">Heure Debut <span class="req">*</span></label>
+                            <input type="time" class="form-control" id="heureDebut" name="heureDebut" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="heureFin" class="form-label">Heure Fin <span class="req">*</span></label>
+                            <input type="time" class="form-control" id="heureFin" name="heureFin" required>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="radioDefault" id="reguliere">
+                            <label class="form-check-label" for="reguliere">
+                                Régulièrement
+                            </label>
+                        </div>
+
+                        <div id="reguliereOptions">
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="semaineA">
+                                <label class="form-check-label" for="semaineA">Semaine A</label>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="semaineB">
+                                <label class="form-check-label" for="semaineB">Semaine B</label>
+                            </div>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="radioDefault" id="uneSeeulFois">
+                            <label class="form-check-label" for="uneSeeulFois">
+                                Une seule fois
+                            </label>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nom" class="form-label">Votre Nom & Prénom <span class="req">*</span></label>
+                            <input type="name" class="form-control" id="nom" aria-describedby="emailHelp" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="courriel" class="form-label">Votre E-Mail <span class="req">*</span></label>
+                            <input type="email" class="form-control" id="courriel" aria-describedby="emailHelp"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button id="nouveau" type="submit" class="btn btn-primary">Inscrire</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Détails Evénement -->
+    <div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="eventDetailsModalLabel">Détails du cours</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2"><strong>Matière :</strong> <span id="eventMatiere"></span></p>
+                    <p class="mb-2"><strong>Groupe :</strong> <span id="eventGroupe"></span></p>
+                    <p class="mb-2"><strong>Enseignant :</strong> <span id="eventProf"></span></p>
+                    <p class="mb-2"><strong>Courriel :</strong> <span id="eventCourriel"></span></p>
+                    <p class="mb-2"><strong>Date :</strong> <span id="eventDate"></span></p>
+                    <p class="mb-2"><strong>Horaires :</strong> <span id="eventHoraires"></span></p>
+                    <p class="mb-2"><strong>Périodicité :</strong> <span id="eventFrequence"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <a href="#">OpenClass</a> © 2026 par Daniel Hasan & Maxime Chourré est sous licence
+        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a><img
+            src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt=""><img
+            src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt=""><img
+            src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt=""><img
+            src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="">
+    </footer>
+
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/javascripts/index.js"></script>
+</body>
+
+</html>

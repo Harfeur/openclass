@@ -3,7 +3,6 @@ const app = express();
 const port = 3000;
 const path = require('path');
 const fs = require('node:fs');
-let ejs = require('ejs');
 
 app.use(express.json()); // for parsing application/json
 
@@ -89,42 +88,10 @@ fs.readFile("bdd.sql", "utf-8", (err, data) => {
 
 
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.use('/vendor/lemonadejs', express.static(path.join(__dirname, 'node_modules/lemonadejs/dist')));
 app.use('/vendor/calendarjs', express.static(path.join(__dirname, 'node_modules/@calendarjs/ce/dist')));
 app.use('/vendor/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
-
-app.get('/', async (req, res) => {
-    try {
-        const [calendrierRes, matieresRes, groupesRes] = await Promise.all([
-            fetch("http://localhost:3000/calendrier"),
-            fetch("http://localhost:3000/matieres"),
-            fetch("http://localhost:3000/groupes")
-
-        ]);
-
-        const calendrier = await calendrierRes.json();
-        const matieres = await matieresRes.json();
-        const groupes = await groupesRes.json();
-
-        res.render('index', {
-            data_calendrier: calendrier,
-            data_matiere: matieres,
-            data_groupes: groupes,
-            data_vacances: vacancesScolaires
-        });
-
-    } catch (err) {
-
-        res.status(500).send(err);
-    }
-});
-
-app.get('/try', (req, res) => {
-    res.render('try');
-});
-
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
