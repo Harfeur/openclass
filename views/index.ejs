@@ -204,8 +204,28 @@
 
     <script>
         const { Schedule } = calendarjs;
-        const calender = '<%- JSON.stringify(data_calendrier) %>';
-        const obj = JSON.parse(calender);
+        const obj = <%- JSON.stringify(data_calendrier) %>;
+        const vacancesData = <%- typeof data_vacances !== "undefined" ? JSON.stringify(data_vacances) : "[]" %>;
+
+        function estEnVacances(dateStr) {
+            if (!dateStr || !vacancesData || !Array.isArray(vacancesData) || vacancesData.length === 0) return false;
+            for (let i = 0; i < vacancesData.length; i++) {
+                const h = vacancesData[i];
+                if (h.start && h.end) {
+                    if (h.start === h.end) {
+                        if (dateStr === h.start) return true;
+                    } else {
+                        if (dateStr >= h.start && dateStr < h.end) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        window.estEnVacances = estEnVacances;
+        window.vacancesData = vacancesData;
 
         function showEventDetails(eventData) {
             if (!eventData) return;
@@ -272,23 +292,25 @@
             const result = [];
 
             if (!isRecurrent) {
-                result.push({
-                    guid: String(element.guid || element.id || ('evt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7))),
-                    title: title,
-                    description: prof,
-                    date: date,
-                    start: debut,
-                    end: fin,
-                    color: element.color || '#3498db',
-                    matiere: matiere,
-                    groupe: groupe,
-                    prof: prof,
-                    courriel: courriel,
-                    debut: debut,
-                    fin: fin,
-                    semaine_a: isSemaineA,
-                    semaine_b: isSemaineB
-                });
+                if (!estEnVacances(date)) {
+                    result.push({
+                        guid: String(element.guid || element.id || ('evt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7))),
+                        title: title,
+                        description: prof,
+                        date: date,
+                        start: debut,
+                        end: fin,
+                        color: element.color || '#3498db',
+                        matiere: matiere,
+                        groupe: groupe,
+                        prof: prof,
+                        courriel: courriel,
+                        debut: debut,
+                        fin: fin,
+                        semaine_a: isSemaineA,
+                        semaine_b: isSemaineB
+                    });
+                }
             } else {
                 const [y, m, d] = date.split('-').map(Number);
                 const origDate = new Date(y, m - 1, d, 12, 0, 0);
@@ -320,23 +342,25 @@
                             const curD = String(cur.getDate()).padStart(2, '0');
                             const dateStr = `${curY}-${curM}-${curD}`;
 
-                            result.push({
-                                guid: `${baseGuid}_${dateStr}`,
-                                title: title,
-                                description: prof,
-                                date: dateStr,
-                                start: debut,
-                                end: fin,
-                                color: element.color || '#3498db',
-                                matiere: matiere,
-                                groupe: groupe,
-                                prof: prof,
-                                courriel: courriel,
-                                debut: debut,
-                                fin: fin,
-                                semaine_a: isSemaineA,
-                                semaine_b: isSemaineB
-                            });
+                            if (!estEnVacances(dateStr)) {
+                                result.push({
+                                    guid: `${baseGuid}_${dateStr}`,
+                                    title: title,
+                                    description: prof,
+                                    date: dateStr,
+                                    start: debut,
+                                    end: fin,
+                                    color: element.color || '#3498db',
+                                    matiere: matiere,
+                                    groupe: groupe,
+                                    prof: prof,
+                                    courriel: courriel,
+                                    debut: debut,
+                                    fin: fin,
+                                    semaine_a: isSemaineA,
+                                    semaine_b: isSemaineB
+                                });
+                            }
                         }
                     }
                     cur.setDate(cur.getDate() + 1);
