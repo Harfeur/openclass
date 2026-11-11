@@ -116,10 +116,14 @@ function genererEvenements(element) {
     const debut = element.debut || element.start || element.timeStart || '';
     const fin = element.fin || element.end || element.timeEnd || '';
 
+    // Si l'événement vient de la base de données, il contient id_matiere et id_groupe (les IDs)
+    // ainsi que matiere et groupe (les noms déjà résolus par le JOIN SQL).
+    // Si l'événement vient du formulaire, matiere et groupe sont déjà les noms.
+    // On convertit uniquement si on a un ID pur et pas encore le nom.
     const matieresSelect = document.getElementById('matieres');
-    if (matieresSelect && matiere) {
+    if (matieresSelect && element.id_matiere && !element.matiere) {
         for (let i = 0; i < matieresSelect.options.length; i++) {
-            if (matieresSelect.options[i].value === String(matiere)) {
+            if (matieresSelect.options[i].value === String(element.id_matiere)) {
                 matiere = matieresSelect.options[i].text.trim();
                 break;
             }
@@ -127,9 +131,9 @@ function genererEvenements(element) {
     }
 
     const groupesSelect = document.getElementById('groupes');
-    if (groupesSelect && groupe) {
+    if (groupesSelect && element.id_groupe && !element.groupe) {
         for (let i = 0; i < groupesSelect.options.length; i++) {
-            if (groupesSelect.options[i].value === String(groupe)) {
+            if (groupesSelect.options[i].value === String(element.id_groupe)) {
                 groupe = groupesSelect.options[i].text.trim();
                 break;
             }
