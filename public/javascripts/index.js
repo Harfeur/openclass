@@ -76,13 +76,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            const matiere = document.getElementById("matieres") ? document.getElementById("matieres").value : "";
-            const groupe = document.getElementById("groupes") ? document.getElementById("groupes").value : "";
+            const matieresSelect = document.getElementById("matieres");
+            const groupesSelect = document.getElementById("groupes");
+            const matiere = matieresSelect ? matieresSelect.value : "";
+            const matiereText = (matieresSelect && matieresSelect.selectedIndex >= 0) ? matieresSelect.options[matieresSelect.selectedIndex].text.trim() : "";
+            const groupe = groupesSelect ? groupesSelect.value : "";
+            const groupeText = (groupesSelect && groupesSelect.selectedIndex >= 0) ? groupesSelect.options[groupesSelect.selectedIndex].text.trim() : "";
             const date = document.getElementById("date") ? document.getElementById("date").value : "";
             const heureDebut = document.getElementById("heureDebut") ? document.getElementById("heureDebut").value : "";
             const heureFin = document.getElementById("heureFin") ? document.getElementById("heureFin").value : "";
             const nom = document.getElementById("nom") ? document.getElementById("nom").value : "";
             const courriel = document.getElementById("courriel") ? document.getElementById("courriel").value : "";
+            const isSemaineA = (reguliere && reguliere.checked && semaineA) ? semaineA.checked : false;
+            const isSemaineB = (reguliere && reguliere.checked && semaineB) ? semaineB.checked : false;
 
             fetch('/nouveau', {
                 method: 'POST',
@@ -93,8 +99,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: JSON.stringify({
                     matiere: matiere,
                     groupe: groupe,
-                    semaineA: (reguliere && reguliere.checked && semaineA) ? semaineA.checked : false,
-                    semaineB: (reguliere && reguliere.checked && semaineB) ? semaineB.checked : false,
+                    semaineA: isSemaineA,
+                    semaineB: isSemaineB,
                     date: date,
                     timeStart: heureDebut,
                     timeEnd: heureFin,
@@ -103,6 +109,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 })
             }).then((response) => {
                 if (response.status === 200) {
+                    if (typeof ajouterEvenementCalendrier === 'function') {
+                        ajouterEvenementCalendrier({
+                            matiere: matiereText || matiere,
+                            groupe: groupeText || groupe,
+                            date: date,
+                            debut: heureDebut,
+                            fin: heureFin,
+                            prof: nom,
+                            courriel: courriel,
+                            semaine_a: isSemaineA,
+                            semaine_b: isSemaineB
+                        });
+                    } else if (typeof window !== 'undefined' && typeof window.ajouterEvenementCalendrier === 'function') {
+                        window.ajouterEvenementCalendrier({
+                            matiere: matiereText || matiere,
+                            groupe: groupeText || groupe,
+                            date: date,
+                            debut: heureDebut,
+                            fin: heureFin,
+                            prof: nom,
+                            courriel: courriel,
+                            semaine_a: isSemaineA,
+                            semaine_b: isSemaineB
+                        });
+                    }
                     formInscr.reset();
                     const reguliereOptions = document.getElementById("reguliereOptions");
                     if (reguliereOptions) {

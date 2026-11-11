@@ -234,33 +234,63 @@
             modal.show();
         }
 
-        const arr = [];
-        for (let index = 0; index < obj.length; index++) {
-            const element = obj[index];
-            const isSemaineA = element.semaine_a === 1 || element.semaine_a === '1' || element.semaine_a === true || element.semaine_a === 'true';
-            const isSemaineB = element.semaine_b === 1 || element.semaine_b === '1' || element.semaine_b === true || element.semaine_b === 'true';
+        function genererEvenements(element) {
+            if (!element) return [];
+            const isSemaineA = element.semaine_a === 1 || element.semaine_a === '1' || element.semaine_a === true || element.semaine_a === 'true' || element.semaineA === true || element.semaineA === 'true' || element.semaineA === 1 || element.semaineA === '1';
+            const isSemaineB = element.semaine_b === 1 || element.semaine_b === '1' || element.semaine_b === true || element.semaine_b === 'true' || element.semaineB === true || element.semaineB === 'true' || element.semaineB === 1 || element.semaineB === '1';
             const isRecurrent = isSemaineA || isSemaineB;
 
+            let matiere = element.matiere || '';
+            let groupe = element.groupe || '';
+            const prof = element.prof || element.nom || '';
+            const courriel = element.courriel || element.email || '';
+            const date = element.date || '';
+            const debut = element.debut || element.start || element.timeStart || '';
+            const fin = element.fin || element.end || element.timeEnd || '';
+
+            const matieresSelect = document.getElementById('matieres');
+            if (matieresSelect && matiere) {
+                for (let i = 0; i < matieresSelect.options.length; i++) {
+                    if (matieresSelect.options[i].value === String(matiere)) {
+                        matiere = matieresSelect.options[i].text.trim();
+                        break;
+                    }
+                }
+            }
+
+            const groupesSelect = document.getElementById('groupes');
+            if (groupesSelect && groupe) {
+                for (let i = 0; i < groupesSelect.options.length; i++) {
+                    if (groupesSelect.options[i].value === String(groupe)) {
+                        groupe = groupesSelect.options[i].text.trim();
+                        break;
+                    }
+                }
+            }
+
+            const title = matiere && groupe ? `${matiere} (${groupe})` : (matiere || groupe || element.title || 'Cours');
+            const result = [];
+
             if (!isRecurrent) {
-                arr.push({
-                    guid: String(element.id || index),
-                    title: `${element.matiere} (${element.groupe})`,
-                    description: element.prof,
-                    date: element.date,
-                    start: element.debut,
-                    end: element.fin,
-                    color: '#3498db',
-                    matiere: element.matiere,
-                    groupe: element.groupe,
-                    prof: element.prof,
-                    courriel: element.courriel,
-                    debut: element.debut,
-                    fin: element.fin,
-                    semaine_a: element.semaine_a,
-                    semaine_b: element.semaine_b
+                result.push({
+                    guid: String(element.guid || element.id || ('evt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7))),
+                    title: title,
+                    description: prof,
+                    date: date,
+                    start: debut,
+                    end: fin,
+                    color: element.color || '#3498db',
+                    matiere: matiere,
+                    groupe: groupe,
+                    prof: prof,
+                    courriel: courriel,
+                    debut: debut,
+                    fin: fin,
+                    semaine_a: isSemaineA,
+                    semaine_b: isSemaineB
                 });
             } else {
-                const [y, m, d] = element.date.split('-').map(Number);
+                const [y, m, d] = date.split('-').map(Number);
                 const origDate = new Date(y, m - 1, d, 12, 0, 0);
                 const targetWeekday = origDate.getDay();
 
@@ -274,6 +304,7 @@
                 const endDate = new Date(startYear + 1, 5, 30, 12, 0, 0);
 
                 let cur = new Date(startDate);
+                const baseGuid = element.guid || element.id || ('evt_' + Date.now());
                 while (cur <= endDate) {
                     if (cur.getDay() === targetWeekday) {
                         const curDay = cur.getDay();
@@ -289,28 +320,35 @@
                             const curD = String(cur.getDate()).padStart(2, '0');
                             const dateStr = `${curY}-${curM}-${curD}`;
 
-                            arr.push({
-                                guid: `${element.id || index}_${dateStr}`,
-                                title: `${element.matiere} (${element.groupe})`,
-                                description: element.prof,
+                            result.push({
+                                guid: `${baseGuid}_${dateStr}`,
+                                title: title,
+                                description: prof,
                                 date: dateStr,
-                                start: element.debut,
-                                end: element.fin,
-                                color: '#3498db',
-                                matiere: element.matiere,
-                                groupe: element.groupe,
-                                prof: element.prof,
-                                courriel: element.courriel,
-                                debut: element.debut,
-                                fin: element.fin,
-                                semaine_a: element.semaine_a,
-                                semaine_b: element.semaine_b
+                                start: debut,
+                                end: fin,
+                                color: element.color || '#3498db',
+                                matiere: matiere,
+                                groupe: groupe,
+                                prof: prof,
+                                courriel: courriel,
+                                debut: debut,
+                                fin: fin,
+                                semaine_a: isSemaineA,
+                                semaine_b: isSemaineB
                             });
                         }
                     }
                     cur.setDate(cur.getDate() + 1);
                 }
             }
+            return result;
+        }
+
+        const arr = [];
+        for (let index = 0; index < obj.length; index++) {
+            const element = obj[index];
+            arr.push(...genererEvenements(element));
         }
 
         const schedule = Schedule(document.getElementById('schedule'), {
@@ -320,7 +358,7 @@
             overlap: true,
             data: arr,
             oncreate: function(self, events, e) {
-                if (events && events.length > 0) {
+                if (e && events && events.length > 0) {
                     const newEvent = events[0];
                     const dateInput = document.getElementById('date');
                     const debutInput = document.getElementById('heureDebut');
@@ -352,6 +390,26 @@
                 }
             }
         });
+
+        window.schedule = schedule;
+
+        function ajouterEvenementCalendrier(eventData) {
+            if (!eventData) return;
+            const items = genererEvenements(eventData);
+            if (items.length > 0) {
+                if (typeof arr !== 'undefined' && Array.isArray(arr)) {
+                    arr.push(...items);
+                }
+                if (window.schedule && typeof window.schedule.addEvents === 'function') {
+                    window.schedule.addEvents(items);
+                }
+            }
+            return items;
+        }
+
+        window.ajouterEvenementCalendrier = ajouterEvenementCalendrier;
+        window.ajouterEvenement = ajouterEvenementCalendrier;
+        window.addEventToCalendar = ajouterEvenementCalendrier;
 
         function updateNavigationInfo() {
             const dateStr = schedule.value || new Date().toISOString().substring(0, 10);
