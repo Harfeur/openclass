@@ -50,7 +50,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 email: courriel
             })
         }).then((response) => {
-            if (response.status === 400) {
+            if (response.status === 200) {
+                document.getElementById("form_inscr").reset();
+                const reguliereOptions = document.getElementById("reguliereOptions");
+                if (reguliereOptions) {
+                    reguliereOptions.style.display = "none";
+                }
+                const modalElement = document.getElementById("exampleModal");
+                const modal = bootstrap.Modal.getInstance(modalElement) || bootstrap.Modal.getOrCreateInstance(modalElement);
+                if (modal) {
+                    modal.hide();
+                }
+            } else if (response.status === 400) {
                 const modalElement = document.getElementById("exampleModal");
                 const modal = bootstrap.Modal.getInstance(modalElement);
 
