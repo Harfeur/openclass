@@ -29,6 +29,19 @@
         </nav>
     </header>
 
+    <div class="container-fluid my-2">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 px-3 py-2 bg-light rounded border">
+            <div class="btn-group" role="group" aria-label="Navigation calendrier">
+                <button type="button" class="btn btn-outline-primary" id="btnPrev">&laquo; Semaine précédente</button>
+                <button type="button" class="btn btn-outline-secondary" id="btnToday">Aujourd'hui</button>
+                <button type="button" class="btn btn-outline-primary" id="btnNext">Semaine suivante &raquo;</button>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span id="weekLabel" class="fw-bold fs-5"></span>
+                <span id="weekTypeBadge" class="badge bg-primary fs-6"></span>
+            </div>
+        </div>
+    </div>
 
     <div id="parent">
         <div id='schedule' style="height: 100%;"></div>
@@ -224,30 +237,85 @@
         const arr = [];
         for (let index = 0; index < obj.length; index++) {
             const element = obj[index];
-            const dateObj = new Date(element.date + 'T12:00:00');
-            arr.push({
-                guid: String(element.id || index),
-                title: `${element.matiere} (${element.groupe})`,
-                description: element.prof,
-                weekday: dateObj.getDay(),
-                start: element.debut,
-                end: element.fin,
-                color: '#3498db',
-                matiere: element.matiere,
-                groupe: element.groupe,
-                prof: element.prof,
-                courriel: element.courriel,
-                date: element.date,
-                debut: element.debut,
-                fin: element.fin,
-                semaine_a: element.semaine_a,
-                semaine_b: element.semaine_b
-            });
+            const isSemaineA = element.semaine_a === 1 || element.semaine_a === '1' || element.semaine_a === true || element.semaine_a === 'true';
+            const isSemaineB = element.semaine_b === 1 || element.semaine_b === '1' || element.semaine_b === true || element.semaine_b === 'true';
+            const isRecurrent = isSemaineA || isSemaineB;
+
+            if (!isRecurrent) {
+                arr.push({
+                    guid: String(element.id || index),
+                    title: `${element.matiere} (${element.groupe})`,
+                    description: element.prof,
+                    date: element.date,
+                    start: element.debut,
+                    end: element.fin,
+                    color: '#3498db',
+                    matiere: element.matiere,
+                    groupe: element.groupe,
+                    prof: element.prof,
+                    courriel: element.courriel,
+                    debut: element.debut,
+                    fin: element.fin,
+                    semaine_a: element.semaine_a,
+                    semaine_b: element.semaine_b
+                });
+            } else {
+                const [y, m, d] = element.date.split('-').map(Number);
+                const origDate = new Date(y, m - 1, d, 12, 0, 0);
+                const targetWeekday = origDate.getDay();
+
+                const startYear = (m >= 7) ? y : y - 1;
+                const sept1 = new Date(startYear, 8, 1, 12, 0, 0);
+                const sept1Day = sept1.getDay();
+                const sept1Diff = (sept1Day === 0 ? -6 : 1) - sept1Day;
+                const mondaySept1 = new Date(startYear, 8, 1 + sept1Diff, 12, 0, 0);
+
+                const startDate = new Date(startYear, 8, 1, 12, 0, 0);
+                const endDate = new Date(startYear + 1, 5, 30, 12, 0, 0);
+
+                let cur = new Date(startDate);
+                while (cur <= endDate) {
+                    if (cur.getDay() === targetWeekday) {
+                        const curDay = cur.getDay();
+                        const curDiff = (curDay === 0 ? -6 : 1) - curDay;
+                        const mondayCur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + curDiff, 12, 0, 0);
+                        const diffWeeks = Math.round((mondayCur.getTime() - mondaySept1.getTime()) / (7 * 24 * 3600 * 1000));
+                        const isWeekA = (diffWeeks % 2 === 0);
+                        const isWeekB = !isWeekA;
+
+                        if ((isWeekA && isSemaineA) || (isWeekB && isSemaineB)) {
+                            const curY = cur.getFullYear();
+                            const curM = String(cur.getMonth() + 1).padStart(2, '0');
+                            const curD = String(cur.getDate()).padStart(2, '0');
+                            const dateStr = `${curY}-${curM}-${curD}`;
+
+                            arr.push({
+                                guid: `${element.id || index}_${dateStr}`,
+                                title: `${element.matiere} (${element.groupe})`,
+                                description: element.prof,
+                                date: dateStr,
+                                start: element.debut,
+                                end: element.fin,
+                                color: '#3498db',
+                                matiere: element.matiere,
+                                groupe: element.groupe,
+                                prof: element.prof,
+                                courriel: element.courriel,
+                                debut: element.debut,
+                                fin: element.fin,
+                                semaine_a: element.semaine_a,
+                                semaine_b: element.semaine_b
+                            });
+                        }
+                    }
+                    cur.setDate(cur.getDate() + 1);
+                }
+            }
         }
 
         const schedule = Schedule(document.getElementById('schedule'), {
             type: 'weekdays',
-            weekly: true,
+            weekly: false,
             validRange: ['08:00', '18:00'],
             readOnlyRange: ['08:00', '18:00'],
             overlap: true,
@@ -260,10 +328,68 @@
             }
         });
 
+        function updateNavigationInfo() {
+            const dateStr = schedule.value || new Date().toISOString().substring(0, 10);
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const date = new Date(y, m - 1, d, 12, 0, 0);
+            const day = date.getDay();
+            const diff = (day === 0 ? -6 : 1) - day;
+            const monday = new Date(y, m - 1, d + diff, 12, 0, 0);
+            const friday = new Date(y, m - 1, d + diff + 4, 12, 0, 0);
+
+            const startYear = (monday.getMonth() + 1 >= 7) ? monday.getFullYear() : monday.getFullYear() - 1;
+            const sept1 = new Date(startYear, 8, 1, 12, 0, 0);
+            const sept1Day = sept1.getDay();
+            const sept1Diff = (sept1Day === 0 ? -6 : 1) - sept1Day;
+            const mondaySept1 = new Date(startYear, 8, 1 + sept1Diff, 12, 0, 0);
+
+            const diffWeeks = Math.round((monday.getTime() - mondaySept1.getTime()) / (7 * 24 * 3600 * 1000));
+            const isWeekA = (diffWeeks % 2 === 0);
+            const typeSemaine = isWeekA ? 'Semaine A' : 'Semaine B';
+
+            const labelMonday = monday.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+            const labelFriday = friday.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+
+            const weekLabelEl = document.getElementById('weekLabel');
+            const weekTypeBadgeEl = document.getElementById('weekTypeBadge');
+            if (weekLabelEl) {
+                weekLabelEl.textContent = `Semaine du ${labelMonday} au ${labelFriday}`;
+            }
+            if (weekTypeBadgeEl) {
+                weekTypeBadgeEl.textContent = typeSemaine;
+                weekTypeBadgeEl.className = isWeekA ? 'badge bg-primary fs-6' : 'badge bg-success fs-6';
+            }
+        }
+
+        updateNavigationInfo();
+
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const btnToday = document.getElementById('btnToday');
+
+        if (btnPrev) {
+            btnPrev.addEventListener('click', function () {
+                schedule.prev();
+                updateNavigationInfo();
+            });
+        }
+        if (btnNext) {
+            btnNext.addEventListener('click', function () {
+                schedule.next();
+                updateNavigationInfo();
+            });
+        }
+        if (btnToday) {
+            btnToday.addEventListener('click', function () {
+                schedule.today();
+                updateNavigationInfo();
+            });
+        }
+
         document.getElementById('schedule').addEventListener('click', function (e) {
             const item = e.target.closest('.lm-schedule-item');
             if (!item) return;
-            const eventData = item.event || obj.find((el, idx) => String(el.id) === String(item.id) || String(idx) === String(item.id));
+            const eventData = item.event || arr.find((el) => String(el.guid) === String(item.id) || String(el.id) === String(item.id));
             if (eventData) {
                 showEventDetails(eventData);
             }
