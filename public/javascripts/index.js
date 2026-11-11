@@ -1,3 +1,16 @@
+document.dictionary = {
+    'Monday': 'Lundi',
+    'Tuesday': 'Mardi',
+    'Wednesday': 'Mercredi',
+    'Thursday': 'Jeudi',
+    'Friday': 'Vendredi',
+    'Mon': 'Lun',
+    'Tue': 'Mar',
+    'Wed': 'Mer',
+    'Thu': 'Jeu',
+    'Fri': 'Ven'
+};
+
 let vacancesData = [];
 let obj = [];
 const arr = [];
